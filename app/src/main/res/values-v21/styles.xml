@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="@android:style/Theme.Material.Light.DarkActionBar">
+        <!-- android theme colors -->
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:colorAccent">@color/white</item>
+        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+
+        <!-- android transitions -->
+        <item name="android:windowContentTransitions">true</item>
+
+        <item name="android:activatedBackgroundIndicator">@drawable/activated_background</item>
+    </style>
+</resources>
