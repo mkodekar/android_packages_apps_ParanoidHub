@@ -37,7 +37,7 @@ public class ShakeService extends Service {
                         public void onClick(DialogInterface dialog, int which) {
                             Instabug instabug = Instabug.getInstance();
                             EditText inputText = (EditText) Utils.myDialogView.findViewById(R.id.dialog_input);
-                            String text = inputText.getText().toString() + " " + Utils.getDeviceInfo();
+                            String text = inputText.getText().toString() + "\n" + Utils.getDeviceInfo();
                             instabug.reportBug(null, text, Utils.getEmail(),
                                     new Instabug.OnSendBugReportListener() {
                                         @Override
