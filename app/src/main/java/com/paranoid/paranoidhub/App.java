@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.instabug.library.Instabug;
 import com.paranoid.paranoidhub.services.ShakeService;
+import com.paranoid.paranoidhub.utils.Utils;
 
 public class App extends Application {
     private static Context mContext;

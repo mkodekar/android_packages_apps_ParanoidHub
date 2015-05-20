@@ -5,8 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.paranoid.paranoidhub.App;
-import com.paranoid.paranoidhub.Utils;
 import com.paranoid.paranoidhub.services.ShakeService;
+import com.paranoid.paranoidhub.utils.OTAUtils;
+import com.paranoid.paranoidhub.utils.Utils;
 
 public class BootReceiver extends BroadcastReceiver {
     @Override
@@ -15,5 +16,6 @@ public class BootReceiver extends BroadcastReceiver {
             Intent serviceIntent = new Intent(App.getContext(), ShakeService.class);
             App.getContext().startService(serviceIntent);
         }
+        OTAUtils.setAlarm(context, true);
     }
 }

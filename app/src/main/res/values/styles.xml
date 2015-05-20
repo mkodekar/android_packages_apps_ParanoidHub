@@ -1,8 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="AppTheme" parent="@android:style/Theme.Material.Light.DarkActionBar">
+        <!-- android theme colors -->
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:colorAccent">@color/red_900</item>
+        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+        <item name="android:checkboxStyle">@style/Checkbox</item>
+        <!-- android transitions -->
+        <item name="android:windowContentTransitions">true</item>
+
+        <item name="android:activatedBackgroundIndicator">@drawable/activated_background</item>
     </style>
 
+    <style name="SystemActivityTheme" parent="@android:style/Theme.Material.NoActionBar">
+        <!-- customize the color palette -->
+        <item name="android:colorPrimary">#B0BEC5</item>
+        <item name="android:colorPrimaryDark">#37474F</item>
+    </style>
+
+    <style name="Checkbox"
+        parent="@android:style/Widget.Material.Light.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/checkbox</item>
+    </style>
 </resources>

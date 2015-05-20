@@ -1,4 +1,4 @@
-package com.paranoid.paranoidhub;
+package com.paranoid.paranoidhub.utils;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -16,16 +16,19 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import com.paranoid.paranoidhub.App;
+import com.paranoid.paranoidhub.R;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class Utils {
-    public static View myDialogView = null;
-    public static final String MOD_VERSION = "ro.modversion";
     public static final String PROPERTY_DEVICE = "ro.pa.device";
     public static final String PROPERTY_DEVICE_EXT = "ro.product.device";
+    public static View myDialogView = null;
 
     public static void createToast(String string) {
         Toast toast = Toast.makeText(App.getContext(), string, Toast.LENGTH_LONG);
@@ -64,47 +67,26 @@ public class Utils {
     }
 
     private static String getDevice() {
-        String device = getProp(PROPERTY_DEVICE);
+        String device = OTAUtils.getProp(PROPERTY_DEVICE);
         if (device == null || device.isEmpty()) {
-            device = getProp(PROPERTY_DEVICE_EXT);
+            device = OTAUtils.getProp(PROPERTY_DEVICE_EXT);
         }
         return device == null ? "" : device.toLowerCase();
     }
 
     public static String getDeviceInfo() {
-        return "VERSION.RELEASE : " + Build.VERSION.RELEASE +
-                "\nMODEL : " + Build.MODEL +
-                "\nPRODUCT : " + Build.PRODUCT +
-                "\nBUILD : " + getVersionString();
-    }
-
-    public static String getProp(String prop) {
-        try {
-            Process process = Runtime.getRuntime().exec("getprop " + prop);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
-                    process.getInputStream()));
-            StringBuilder log = new StringBuilder();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                log.append(line);
-            }
-            return log.toString();
-        } catch (IOException e) {
-            // Runtime error
-        }
-        return null;
+        return "Android Version: " + Build.VERSION.RELEASE +
+                "\nModel: " + Build.MODEL +
+                "\nCodename: " + Build.PRODUCT +
+                "\nBuild: " + getVersionString();
     }
 
     public static String getVersionString() {
-        return getDevice() + "-" + getProp(MOD_VERSION);
+        return "pa_" + getDevice() + "-" + OTAUtils.getProp(OTAUtils.MOD_VERSION);
     }
 
     public static boolean isBuildHigherThanVersion(int version) {
-        if (Build.VERSION.SDK_INT >= version) {
-            return true;
-        } else {
-            return false;
-        }
+        return Build.VERSION.SDK_INT >= version;
     }
 
     @SuppressLint("NewApi")
@@ -126,5 +108,18 @@ public class Utils {
             }
         }
         return false;
+    }
+
+    public static String getReadableDate(String fileDate) {
+        try {
+            Date currentDate = new Date();
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            Date parsedDate = format.parse(fileDate);
+            long diff = TimeUnit.MILLISECONDS.toDays(currentDate.getTime() - parsedDate.getTime());
+            return diff > 1 ? diff + " days ago" : diff + " day ago";
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

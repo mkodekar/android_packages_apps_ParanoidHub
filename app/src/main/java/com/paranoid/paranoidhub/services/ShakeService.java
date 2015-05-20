@@ -12,8 +12,8 @@ import android.widget.EditText;
 import com.instabug.library.Instabug;
 import com.paranoid.paranoidhub.App;
 import com.paranoid.paranoidhub.R;
-import com.paranoid.paranoidhub.Utils;
 import com.paranoid.paranoidhub.listeners.ShakeListener;
+import com.paranoid.paranoidhub.utils.Utils;
 
 // Service that binds the ShakeListener and receives the Shakes
 public class ShakeService extends Service {

@@ -1,146 +1,419 @@
 package com.paranoid.paranoidhub.activities;
 
-import android.app.Activity;
-
 import android.app.ActionBar;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
+import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import com.paranoid.paranoidhub.R;
-import com.paranoid.paranoidhub.fragments.NavigationDrawerFragment;
+import com.paranoid.paranoidhub.cards.DownloadCard;
+import com.paranoid.paranoidhub.cards.InstallCard;
+import com.paranoid.paranoidhub.cards.SystemCard;
+import com.paranoid.paranoidhub.cards.UpdatesCard;
+import com.paranoid.paranoidhub.helpers.DownloadHelper;
+import com.paranoid.paranoidhub.helpers.RebootHelper;
+import com.paranoid.paranoidhub.helpers.RecoveryHelper;
+import com.paranoid.paranoidhub.updater.RomUpdater;
+import com.paranoid.paranoidhub.updater.Updater;
+import com.paranoid.paranoidhub.utils.IOUtils;
+import com.paranoid.paranoidhub.utils.OTAUtils;
+import com.paranoid.paranoidhub.widget.Card;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class HubActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements Updater.UpdaterListener, DownloadHelper.DownloadCallback, AdapterView.OnItemClickListener {
 
-    /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
-    private NavigationDrawerFragment mNavigationDrawerFragment;
+    public static final int STATE_UPDATES = 0;
+    public static final int STATE_DOWNLOAD = 1;
+    public static final int STATE_INSTALL = 2;
+    public static final int STATE_FEEDBACK = 3;
+    private static final String CHANGELOG = "https://plus.google.com/+Aospal";
+    private static final String COMMUNITY = "https://plus.google.com/communities/103106032137232805260";
+    private static final String CROWDIN = "https://crowdin.com/project/aospa-legacy";
+    private static final String GITHUB = "https://github.com/AOSPA-L";
+    private static final String STATE = "STATE";
+    private ActionBar actionBar;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
 
-    /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
-     */
+    private RecoveryHelper mRecoveryHelper;
+    private RebootHelper mRebootHelper;
+    private DownloadHelper.DownloadCallback mDownloadCallback;
+
+    private SystemCard mSystemCard;
+    private UpdatesCard mUpdatesCard;
+    private DownloadCard mDownloadCard;
+    private InstallCard mInstallCard;
+
+    private RomUpdater mRomUpdater;
+    private OTAUtils.NotificationInfo mNotificationInfo;
+
+    private LinearLayout mCardsLayout;
     private CharSequence mTitle;
+
+    private Context mContext;
+    private Bundle mSavedInstanceState;
+
+    private int mState = STATE_UPDATES;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mContext = this;
+        mSavedInstanceState = savedInstanceState;
+
         setContentView(R.layout.activity_hub);
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        assert actionBar != null;
+        actionBar.setHomeButtonEnabled(true);
+
+        Resources res = getResources();
+        List<String> itemText = new ArrayList<String>();
+        itemText.add(res.getString(R.string.updates));
+        itemText.add(res.getString(R.string.install));
+        itemText.add(res.getString(R.string.feedback));
+        itemText.add(res.getString(R.string.changelog));
+        itemText.add(res.getString(R.string.community));
+        itemText.add(res.getString(R.string.crowdin));
+        itemText.add(res.getString(R.string.github));
+
+        mCardsLayout = (LinearLayout) findViewById(R.id.cards_layout);
         mTitle = getTitle();
 
-        // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+
+        mDrawerList.setAdapter(new ArrayAdapter<String>(
+                getActionBar().getThemedContext(),
+                android.R.layout.simple_list_item_activated_1,
+                android.R.id.text1,
+                itemText));
+
+        mDrawerList.setOnItemClickListener(this);
+
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                             /* host Activity */
+                mDrawerLayout,                    /* DrawerLayout object */
+                R.drawable.ic_drawer,             /* nav drawer image to replace 'Up' caret */
+                R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
+                R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
+        ) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                updateTitle();
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                actionBar.setTitle(R.string.app_name);
+            }
+        };
+
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        mRecoveryHelper = new RecoveryHelper(this);
+        mRebootHelper = new RebootHelper(mRecoveryHelper);
+
+        mRomUpdater = new RomUpdater(this, false);
+        mRomUpdater.addUpdaterListener(this);
+
+        DownloadHelper.init(this, this);
+
+        Intent intent = getIntent();
+        onNewIntent(intent);
+
+        if (mSavedInstanceState == null) {
+
+            IOUtils.init(this);
+
+            mCardsLayout.setAnimation(AnimationUtils.loadAnimation(this, R.anim.up_from_bottom));
+
+            if (mNotificationInfo != null) {
+                if (mNotificationInfo.mNotificationId != Updater.NOTIFICATION_ID) {
+                    checkUpdates();
+                } else {
+                    mRomUpdater.setLastUpdates(mNotificationInfo.mPackageInfosRom);
+                }
+            } else {
+                checkUpdates();
+            }
+            if (DownloadHelper.isDownloading(true) || DownloadHelper.isDownloading(false)) {
+                setState(STATE_DOWNLOAD, true, false);
+            } else {
+                if (mState != STATE_INSTALL) {
+                    setState(STATE_UPDATES, true, false);
+                }
+            }
+        } else {
+            setState(mSavedInstanceState.getInt(STATE), false, true);
+        }
+
+        if (!OTAUtils.alarmExists(this)) {
+            OTAUtils.setAlarm(this, true);
+        }
+
+    }
+
+    public void setDownloadCallback(DownloadHelper.DownloadCallback downloadCallback) {
+        mDownloadCallback = downloadCallback;
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(STATE, mState);
+        switch (mState) {
+            case STATE_UPDATES:
+                mSystemCard.saveState(outState);
+                mUpdatesCard.saveState(outState);
+                break;
+            case STATE_DOWNLOAD:
+                mDownloadCard.saveState(outState);
+                break;
+            case STATE_INSTALL:
+                mInstallCard.saveState(outState);
+                break;
+        }
     }
 
-    public void onSectionAttached(int number) {
-        switch (number) {
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    public void checkUpdates() {
+        mRomUpdater.check();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        switch (position) {
+            case 0:
+                if (mState == STATE_UPDATES || mState == STATE_DOWNLOAD) {
+                    break;
+                }
+                setState(STATE_UPDATES, true, false);
+                break;
             case 1:
-                mTitle = getString(R.string.title_section1);
+                if (mState == STATE_INSTALL) {
+                    break;
+                }
+                setState(STATE_INSTALL, true, false);
                 break;
             case 2:
-                mTitle = getString(R.string.title_section2);
+                //TODO
                 break;
             case 3:
-                mTitle = getString(R.string.title_section3);
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(CHANGELOG));
+                startActivity(browserIntent);
+                break;
+            case 4:
+                browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(COMMUNITY));
+                startActivity(browserIntent);
+                break;
+            case 5:
+                browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(CROWDIN));
+                startActivity(browserIntent);
+                break;
+            case 6:
+                browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(GITHUB));
+                startActivity(browserIntent);
                 break;
         }
+        mDrawerLayout.closeDrawer(mDrawerList);
     }
-
-    public void restoreActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
-    }
-
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.hub, menu);
-            restoreActionBar();
-            return true;
+    protected void onNewIntent(Intent intent) {
+        mNotificationInfo = null;
+        if (intent != null && intent.getExtras() != null) {
+            mNotificationInfo = (OTAUtils.NotificationInfo) intent.getSerializableExtra(OTAUtils.FILES_INFO);
+            if (intent.getBooleanExtra(OTAUtils.CHECK_DOWNLOADS_FINISHED, false)) {
+                DownloadHelper.checkDownloadFinished(this,
+                        intent.getLongExtra(OTAUtils.CHECK_DOWNLOADS_ID, -1L));
+            }
         }
-        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DownloadHelper.registerCallback(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        DownloadHelper.unregisterCallback();
+    }
+
+    @Override
+    public void onDownloadStarted() {
+        if (mDownloadCallback != null) {
+            mDownloadCallback.onDownloadStarted();
+        }
+    }
+
+    @Override
+    public void onDownloadProgress(int progress) {
+        if (mDownloadCallback != null) {
+            mDownloadCallback.onDownloadProgress(progress);
+        }
+    }
+
+    @Override
+    public void onDownloadFinished(Uri uri, String md5, boolean isRom) {
+        if (mDownloadCallback != null) {
+            mDownloadCallback.onDownloadFinished(uri, md5, isRom);
+        }
+        if (uri == null) {
+            if (!DownloadHelper.isDownloading(!isRom)) {
+                setState(STATE_UPDATES, true, false);
+            }
+        } else {
+            setState(STATE_INSTALL, true, null, uri, md5, isRom, false);
+        }
+    }
+
+    @Override
+    public void onDownloadError(String reason) {
+        if (mDownloadCallback != null) {
+            mDownloadCallback.onDownloadError(reason);
+        }
+    }
+
+    @Override
+    public void startChecking() {
+        setProgressBarIndeterminate(true);
+        setProgressBarVisibility(true);
+    }
+
+    @Override
+    public void versionFound(Updater.PackageInfo[] info) {
+
+    }
+
+    @Override
+    public void checkError(String cause) {
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
+    public void setState(int state) {
+        setState(state, false, false);
+    }
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
+    public void setState(int state, boolean animate, boolean fromRotation) {
+        setState(state, animate, null, null, null, false, fromRotation);
+    }
+
+    public void setState(int state, boolean animate, Updater.PackageInfo[] infos,
+                         Uri uri, String md5, boolean isRom, boolean fromRotation) {
+        mState = state;
+        switch (state) {
+            case STATE_UPDATES:
+                if (mSystemCard == null) {
+                    mSystemCard = new SystemCard(mContext, null, mRomUpdater, mSavedInstanceState);
+                }
+                if (mUpdatesCard == null) {
+                    mUpdatesCard = new UpdatesCard(mContext, null, mRomUpdater, mSavedInstanceState);
+                }
+                addCards(new Card[]{
+                        mSystemCard, mUpdatesCard
+                }, animate, true);
+                break;
+            case STATE_DOWNLOAD:
+                if (mDownloadCard == null) {
+                    mDownloadCard = new DownloadCard(mContext, null, infos, mSavedInstanceState);
+                } else {
+                    mDownloadCard.setInitialInfos(infos);
+                }
+                addCards(new Card[]{
+                        mDownloadCard
+                }, animate, true);
+                break;
+            case STATE_INSTALL:
+                if (mInstallCard == null) {
+                    mInstallCard = new InstallCard(mContext, null, mRebootHelper,
+                            mSavedInstanceState);
+                }
+                if (!DownloadHelper.isDownloading(!isRom)) {
+                    addCards(new Card[]{
+                            mInstallCard
+                    }, !fromRotation, true);
+                } else {
+                    addCards(new Card[]{
+                            mInstallCard
+                    }, true, false);
+                }
+                if (uri != null) {
+                    mInstallCard.addFile(uri, md5);
+                }
+                break;
         }
+        ((ArrayAdapter<String>) mDrawerList.getAdapter()).notifyDataSetChanged();
+        updateTitle();
+    }
 
-        public PlaceholderFragment() {
+    public void addCards(Card[] cards, boolean animate, boolean remove) {
+        mCardsLayout.clearAnimation();
+        if (remove) {
+            mCardsLayout.removeAllViews();
         }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_hub, container, false);
-            return rootView;
+        if (animate) {
+            mCardsLayout.setAnimation(AnimationUtils.loadAnimation(this, R.anim.up_from_bottom));
         }
+        for (Card card : cards) {
+            mCardsLayout.addView(card);
+        }
+    }
 
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            ((HubActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
+    private void updateTitle() {
+        switch (mState) {
+            case STATE_UPDATES:
+                actionBar.setTitle(R.string.updates);
+                break;
+            case STATE_INSTALL:
+                actionBar.setTitle(R.string.install);
+                break;
         }
     }
 
