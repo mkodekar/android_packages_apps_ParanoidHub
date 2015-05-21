@@ -8,17 +8,19 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.paranoid.paranoidhub.App;
 import com.paranoid.paranoidhub.R;
 import com.paranoid.paranoidhub.cards.DownloadCard;
 import com.paranoid.paranoidhub.cards.InstallCard;
@@ -31,6 +33,7 @@ import com.paranoid.paranoidhub.updater.RomUpdater;
 import com.paranoid.paranoidhub.updater.Updater;
 import com.paranoid.paranoidhub.utils.IOUtils;
 import com.paranoid.paranoidhub.utils.OTAUtils;
+import com.paranoid.paranoidhub.utils.Utils;
 import com.paranoid.paranoidhub.widget.Card;
 
 import java.util.ArrayList;
@@ -53,7 +56,6 @@ public class HubActivity extends Activity
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
-    private RecoveryHelper mRecoveryHelper;
     private RebootHelper mRebootHelper;
     private DownloadHelper.DownloadCallback mDownloadCallback;
 
@@ -80,15 +82,15 @@ public class HubActivity extends Activity
         mContext = this;
         mSavedInstanceState = savedInstanceState;
 
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_hub);
 
-        actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if ((actionBar = getActionBar()) != null) actionBar.setDisplayHomeAsUpEnabled(true);
         assert actionBar != null;
         actionBar.setHomeButtonEnabled(true);
 
         Resources res = getResources();
-        List<String> itemText = new ArrayList<String>();
+        List<String> itemText = new ArrayList<>();
         itemText.add(res.getString(R.string.updates));
         itemText.add(res.getString(R.string.install));
         itemText.add(res.getString(R.string.feedback));
@@ -105,7 +107,7 @@ public class HubActivity extends Activity
 
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-        mDrawerList.setAdapter(new ArrayAdapter<String>(
+        mDrawerList.setAdapter(new ArrayAdapter<>(
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
@@ -134,7 +136,7 @@ public class HubActivity extends Activity
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        mRecoveryHelper = new RecoveryHelper(this);
+        RecoveryHelper mRecoveryHelper = new RecoveryHelper(this);
         mRebootHelper = new RebootHelper(mRecoveryHelper);
 
         mRomUpdater = new RomUpdater(this, false);
@@ -212,7 +214,11 @@ public class HubActivity extends Activity
     }
 
     public void checkUpdates() {
-        mRomUpdater.check();
+        if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
+            mRomUpdater.check();
+        } else if (!Utils.isNetworkAvailable(this) || !Utils.isOnWifi(this)) {
+            Utils.createToast(App.getContext().getString(R.string.no_connection));
+        }
     }
 
     @Override
@@ -234,20 +240,37 @@ public class HubActivity extends Activity
                 //TODO: Feedback
                 break;
             case 3:
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(CHANGELOG));
-                startActivity(browserIntent);
+                Intent browserIntent;
+                if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
+                    browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(CHANGELOG));
+                    startActivity(browserIntent);
+                } else if (!Utils.isNetworkAvailable(this) || !Utils.isOnWifi(this)) {
+                    Utils.createToast(App.getContext().getString(R.string.no_connection));
+                }
                 break;
             case 4:
-                browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(COMMUNITY));
-                startActivity(browserIntent);
+                if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
+                    browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(COMMUNITY));
+                    startActivity(browserIntent);
+                } else if (!Utils.isNetworkAvailable(this) || !Utils.isOnWifi(this)) {
+                    Utils.createToast(App.getContext().getString(R.string.no_connection));
+                }
                 break;
             case 5:
-                browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(CROWDIN));
-                startActivity(browserIntent);
+                if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
+                    browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(CROWDIN));
+                    startActivity(browserIntent);
+                } else if (!Utils.isNetworkAvailable(this) || !Utils.isOnWifi(this)) {
+                    Utils.createToast(App.getContext().getString(R.string.no_connection));
+                }
                 break;
             case 6:
-                browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(GITHUB));
-                startActivity(browserIntent);
+                if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
+                    browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(GITHUB));
+                    startActivity(browserIntent);
+                } else if (!Utils.isNetworkAvailable(this) || !Utils.isOnWifi(this)) {
+                    Utils.createToast(App.getContext().getString(R.string.no_connection));
+                }
                 break;
         }
         mDrawerLayout.closeDrawer(mDrawerList);
@@ -330,10 +353,7 @@ public class HubActivity extends Activity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     public void setState(int state) {

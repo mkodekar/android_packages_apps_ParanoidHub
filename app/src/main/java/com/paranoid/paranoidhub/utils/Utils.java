@@ -7,6 +7,8 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.PowerManager;
 import android.os.Vibrator;
@@ -121,5 +123,21 @@ public class Utils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    //check if device is connected to mobile network
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    // check if device is connected to mobile network
+    public static boolean isOnWifi(Context context) {
+        ConnectivityManager mConnectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mNetworkInfo = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return mNetworkInfo != null && mNetworkInfo.isConnected();
     }
 }
