@@ -231,7 +231,7 @@ public class HubActivity extends Activity
                 setState(STATE_INSTALL, true, false);
                 break;
             case 2:
-                //TODO
+                //TODO: Feedback
                 break;
             case 3:
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(CHANGELOG));
