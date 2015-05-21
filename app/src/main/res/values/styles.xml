@@ -11,6 +11,7 @@
         <item name="android:checkboxStyle">@style/Checkbox</item>
         <!-- android transitions -->
         <item name="android:windowContentTransitions">true</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
 
         <item name="android:activatedBackgroundIndicator">@drawable/activated_background</item>
     </style>
@@ -24,5 +25,10 @@
     <style name="Checkbox"
         parent="@android:style/Widget.Material.Light.CompoundButton.CheckBox">
         <item name="android:button">@drawable/checkbox</item>
+    </style>
+
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@android:color/white</item>
     </style>
 </resources>
