@@ -49,7 +49,7 @@ public class Splash extends View {
         mPaintCircle.setColor(Color.WHITE);
 
         matrix = new Matrix();
-        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+        icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
 
         new Thread(new Runnable() {
             @Override

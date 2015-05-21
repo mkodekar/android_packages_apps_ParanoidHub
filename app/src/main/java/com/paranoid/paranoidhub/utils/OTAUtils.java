@@ -219,7 +219,7 @@ public class OTAUtils {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentTitle(resources.getString(R.string.new_system_update))
-                .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_launcher))
+                .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
                 .setContentIntent(pIntent);
 
         String contextText = "";
