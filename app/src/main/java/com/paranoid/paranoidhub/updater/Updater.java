@@ -101,7 +101,7 @@ public abstract class Updater implements Response.Listener<JSONObject>, Response
             mSettingsHelper = new SettingsHelper(getContext());
         }
         if (mFromAlarm) {
-            if (!force && (mSettingsHelper.getCheckTime() < 0)) {
+            if (!force && (mSettingsHelper.getCheckTime() == 0)) {
                 return;
             }
         }

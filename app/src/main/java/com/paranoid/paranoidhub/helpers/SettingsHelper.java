@@ -11,7 +11,7 @@ public class SettingsHelper {
     public static final String DOWNLOAD_ROM_MD5 = "download_rom_md5";
     public static final String DOWNLOAD_ROM_FILENAME = "download_rom_filaname";
 
-    private static final String DEFAULT_CHECK_TIME = "18000000"; // five hours
+    private static final int DEFAULT_CHECK_TIME = 18000000; // five hours
 
     private static SharedPreferences settings;
 
@@ -20,8 +20,8 @@ public class SettingsHelper {
         settings = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public long getCheckTime() {
-        return Long.parseLong(settings.getString(PROPERTY_CHECK_TIME, DEFAULT_CHECK_TIME));
+    public static int getCheckTime() {
+        return settings.getInt(PROPERTY_CHECK_TIME, DEFAULT_CHECK_TIME);
     }
 
     public void setDownloadRomId(Long id, String md5, String fileName) {

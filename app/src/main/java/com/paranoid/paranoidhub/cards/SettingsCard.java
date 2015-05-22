@@ -38,7 +38,7 @@ public class SettingsCard extends Card {
         setLayoutId(R.layout.card_settings);
 
         DiscreteSeekBar seekBar = (DiscreteSeekBar) findViewById(R.id.seekbar);
-        seekBar.setProgress(0);
+        seekBar.setProgress(SettingsHelper.getCheckTime() / 3600 / 1000);
         seekBar.setMin(0);
         seekBar.setMax(48);
         seekBar.setTrackColor(getResources().getColor(R.color.red_900));
