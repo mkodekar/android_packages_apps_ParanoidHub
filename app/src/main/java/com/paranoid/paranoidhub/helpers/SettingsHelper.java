@@ -13,7 +13,7 @@ public class SettingsHelper {
 
     private static final String DEFAULT_CHECK_TIME = "18000000"; // five hours
 
-    private SharedPreferences settings;
+    private static SharedPreferences settings;
 
     public SettingsHelper(Context context) {
 
@@ -48,13 +48,19 @@ public class SettingsHelper {
         return settings.getString(DOWNLOAD_ROM_FILENAME, null);
     }
 
-    private void savePreference(String preference, String value) {
+    public static void savePreference(String preference, String value) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(preference, value);
         editor.commit();
     }
 
-    private void removePreference(String preference) {
+    public static void savePreference(String preference, int value) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt(preference, value);
+        editor.commit();
+    }
+
+    public static void removePreference(String preference) {
         SharedPreferences.Editor editor = settings.edit();
         editor.remove(preference);
         editor.commit();

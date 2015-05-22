@@ -25,6 +25,7 @@ import com.paranoid.paranoidhub.App;
 import com.paranoid.paranoidhub.R;
 import com.paranoid.paranoidhub.cards.DownloadCard;
 import com.paranoid.paranoidhub.cards.InstallCard;
+import com.paranoid.paranoidhub.cards.SettingsCard;
 import com.paranoid.paranoidhub.cards.SystemCard;
 import com.paranoid.paranoidhub.cards.UpdatesCard;
 import com.paranoid.paranoidhub.helpers.DownloadHelper;
@@ -63,6 +64,7 @@ public class HubActivity extends Activity
 
     private SystemCard mSystemCard;
     private UpdatesCard mUpdatesCard;
+    private SettingsCard mSettingsCard;
     private DownloadCard mDownloadCard;
     private InstallCard mInstallCard;
 
@@ -196,6 +198,7 @@ public class HubActivity extends Activity
             case STATE_UPDATES:
                 mSystemCard.saveState(outState);
                 mUpdatesCard.saveState(outState);
+                mSettingsCard.saveState(outState);
                 break;
             case STATE_DOWNLOAD:
                 mDownloadCard.saveState(outState);
@@ -380,8 +383,11 @@ public class HubActivity extends Activity
                 if (mUpdatesCard == null) {
                     mUpdatesCard = new UpdatesCard(mContext, null, mRomUpdater, mSavedInstanceState);
                 }
+                if (mSettingsCard == null) {
+                    mSettingsCard = new SettingsCard(mContext, null, mSavedInstanceState);
+                }
                 addCards(new Card[]{
-                        mSystemCard, mUpdatesCard
+                        mSystemCard, mUpdatesCard, mSettingsCard
                 }, animate, true);
                 break;
             case STATE_DOWNLOAD:
