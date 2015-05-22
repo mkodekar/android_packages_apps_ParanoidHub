@@ -6,9 +6,11 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="25dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
         android:text="@string/feedback_message"
-        android:textColor="@color/black"
+        android:textColor="@color/card_text"
         android:textSize="18dp" />
 
     <EditText
@@ -16,6 +18,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_margin="25dp"
-        android:textColor="@color/black"
+        android:textColor="@color/card_text"
         android:textSize="18dp" />
 </LinearLayout>

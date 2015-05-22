@@ -41,7 +41,7 @@ public class Utils {
     public static void createInputDialog(String title, DialogInterface.OnClickListener positiveListener,
                                          DialogInterface.OnClickListener negativeListener) {
         LayoutInflater factory = LayoutInflater.from(App.getContext());
-        myDialogView = factory.inflate(R.layout.feedback_dialog, null);
+        myDialogView = factory.inflate(R.layout.dialog_feedback, null);
         AlertDialog dialog = new AlertDialog.Builder(App.getContext(),
                 android.R.style.Theme_DeviceDefault_Light_Dialog_MinWidth)
                 .setTitle(title)
