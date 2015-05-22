@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -35,6 +36,7 @@ import com.paranoid.paranoidhub.utils.IOUtils;
 import com.paranoid.paranoidhub.utils.OTAUtils;
 import com.paranoid.paranoidhub.utils.Utils;
 import com.paranoid.paranoidhub.widget.Card;
+import com.paranoid.paranoidhub.widget.Splash;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +66,8 @@ public class HubActivity extends Activity
     private DownloadCard mDownloadCard;
     private InstallCard mInstallCard;
 
+    private Splash mSplash;
+
     private RomUpdater mRomUpdater;
     private OTAUtils.NotificationInfo mNotificationInfo;
 
@@ -81,7 +85,6 @@ public class HubActivity extends Activity
 
         mContext = this;
         mSavedInstanceState = savedInstanceState;
-
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_hub);
 
@@ -104,6 +107,7 @@ public class HubActivity extends Activity
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mSplash = (Splash) findViewById(R.id.splash_view);
 
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
@@ -177,6 +181,7 @@ public class HubActivity extends Activity
             OTAUtils.setAlarm(this, true);
         }
 
+        mSplash.finish();
     }
 
     public void setDownloadCallback(DownloadHelper.DownloadCallback downloadCallback) {
