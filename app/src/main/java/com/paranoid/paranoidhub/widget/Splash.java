@@ -78,7 +78,7 @@ public class Splash extends View {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(250);
                     for (int i = 1; i <= getHeight() / 2; i += 15) {
                         radius = i;
                         ((Activity) getContext()).runOnUiThread(new Runnable() {
