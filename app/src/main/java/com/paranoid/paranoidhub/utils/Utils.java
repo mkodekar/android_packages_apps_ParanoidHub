@@ -24,6 +24,7 @@ import com.paranoid.paranoidhub.R;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -123,6 +124,26 @@ public class Utils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    // Get current running App
+    public static String getForegroundApp() {
+        ActivityManager activityManager = (ActivityManager) App.getContext()
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+            if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                return appProcess.processName;
+            }
+        }
+        return null;
+    }
+
+    public static boolean isAppForegroung() {
+        if (getForegroundApp().equals("com.paranoid.paranoidhub")) {
+            return true;
+        }
+        return false;
     }
 
     //check if device is connected to mobile network
