@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2015 Willi Ye
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.paranoid.paranoidhub.widget;
 
 import android.app.Activity;
@@ -15,9 +31,6 @@ import android.view.animation.AnimationUtils;
 
 import com.paranoid.paranoidhub.R;
 
-/**
- * Created by willi on 09.03.15.
- */
 public class Splash extends View {
 
     private final Paint mPaintCircle;
@@ -56,7 +69,7 @@ public class Splash extends View {
             public void run() {
                 while (true) {
                     try {
-                        Thread.sleep(10);
+                        Thread.sleep(17);
                         rotate++;
                         ((Activity) getContext()).runOnUiThread(new Runnable() {
                             @Override
@@ -87,12 +100,13 @@ public class Splash extends View {
                                 invalidate();
                             }
                         });
-                        Thread.sleep(15);
+                        Thread.sleep(17);
                     }
                     ((Activity) getContext()).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             setVisibility(GONE);
+                            finished = true;
                             startAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
                         }
                     });

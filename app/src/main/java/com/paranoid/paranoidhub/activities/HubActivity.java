@@ -8,7 +8,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -68,8 +67,6 @@ public class HubActivity extends Activity
     private DownloadCard mDownloadCard;
     private InstallCard mInstallCard;
 
-    private Splash mSplash;
-
     private RomUpdater mRomUpdater;
     private OTAUtils.NotificationInfo mNotificationInfo;
 
@@ -109,7 +106,7 @@ public class HubActivity extends Activity
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mSplash = (Splash) findViewById(R.id.splash_view);
+        Splash mSplash = (Splash) findViewById(R.id.splash_view);
 
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
