@@ -11,7 +11,7 @@ public class SettingsHelper {
     public static final String DOWNLOAD_ROM_MD5 = "download_rom_md5";
     public static final String DOWNLOAD_ROM_FILENAME = "download_rom_filaname";
 
-    private static final int DEFAULT_CHECK_TIME = 18000000; // five hours
+    public static final int DEFAULT_CHECK_TIME = 18000000; // five hours
 
     private static SharedPreferences settings;
 
