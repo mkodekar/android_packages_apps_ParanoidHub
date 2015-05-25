@@ -10,7 +10,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -41,7 +44,7 @@ import com.paranoid.paranoidhub.widget.Splash;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HubActivity extends Activity
+public class HubActivity extends AppCompatActivity
         implements Updater.UpdaterListener, DownloadHelper.DownloadCallback, AdapterView.OnItemClickListener {
 
     public static final int STATE_UPDATES = 0;
@@ -53,7 +56,6 @@ public class HubActivity extends Activity
     private static final String CROWDIN = "https://crowdin.com/project/aospa-legacy";
     private static final String GITHUB = "https://github.com/AOSPA-L";
     private static final String STATE = "STATE";
-    private ActionBar actionBar;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private LinearLayout mDrawer;
@@ -81,16 +83,12 @@ public class HubActivity extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         super.onCreate(savedInstanceState);
 
         mContext = this;
         mSavedInstanceState = savedInstanceState;
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_hub);
-
-        if ((actionBar = getActionBar()) != null) actionBar.setDisplayHomeAsUpEnabled(true);
-        assert actionBar != null;
-        actionBar.setHomeButtonEnabled(true);
 
         Resources res = getResources();
         List<String> itemText = new ArrayList<>();
@@ -101,6 +99,9 @@ public class HubActivity extends Activity
         itemText.add(res.getString(R.string.community));
         itemText.add(res.getString(R.string.crowdin));
         itemText.add(res.getString(R.string.github));
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         mCardsLayout = (LinearLayout) findViewById(R.id.cards_layout);
         mTitle = getTitle();
@@ -121,6 +122,7 @@ public class HubActivity extends Activity
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                             /* host Activity */
                 mDrawerLayout,                    /* DrawerLayout object */
+                toolbar,
                 R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
                 R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
         ) {
@@ -133,7 +135,7 @@ public class HubActivity extends Activity
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                actionBar.setTitle(R.string.app_name);
+                getSupportActionBar().setTitle(R.string.app_name);
             }
         };
 
@@ -436,10 +438,10 @@ public class HubActivity extends Activity
     private void updateTitle() {
         switch (mState) {
             case STATE_UPDATES:
-                actionBar.setTitle(R.string.updates);
+                getSupportActionBar().setTitle(R.string.updates);
                 break;
             case STATE_INSTALL:
-                actionBar.setTitle(R.string.install);
+                getSupportActionBar().setTitle(R.string.install);
                 break;
         }
     }
