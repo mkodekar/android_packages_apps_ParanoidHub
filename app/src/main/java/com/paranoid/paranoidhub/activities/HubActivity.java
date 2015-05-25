@@ -112,8 +112,8 @@ public class HubActivity extends Activity
 
         mDrawerList.setAdapter(new ArrayAdapter<>(
                 getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
+                R.layout.drawer_list_item,
+                R.id.drawer_text,
                 itemText));
 
         mDrawerList.setOnItemClickListener(this);
