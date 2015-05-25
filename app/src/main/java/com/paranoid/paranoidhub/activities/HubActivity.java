@@ -56,6 +56,7 @@ public class HubActivity extends Activity
     private ActionBar actionBar;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    private LinearLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
 
     private RebootHelper mRebootHelper;
@@ -106,12 +107,11 @@ public class HubActivity extends Activity
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawer = (LinearLayout) findViewById(R.id.drawer);
         Splash mSplash = (Splash) findViewById(R.id.splash_view);
 
-        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-
         mDrawerList.setAdapter(new ArrayAdapter<>(
-                getActionBar().getThemedContext(),
+                this,
                 R.layout.drawer_list_item,
                 R.id.drawer_text,
                 itemText));
@@ -278,7 +278,7 @@ public class HubActivity extends Activity
                 }
                 break;
         }
-        mDrawerLayout.closeDrawer(mDrawerList);
+        mDrawerLayout.closeDrawer(mDrawer);
     }
 
     @Override
