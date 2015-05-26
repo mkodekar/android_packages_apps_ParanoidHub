@@ -154,13 +154,16 @@ public class HubActivity extends AppCompatActivity
             mCardsLayout.setAnimation(AnimationUtils.loadAnimation(this, R.anim.up_from_bottom));
 
             if (mNotificationInfo != null) {
-                if (mNotificationInfo.mNotificationId != Updater.NOTIFICATION_ID) {
+                if (mNotificationInfo.mNotificationId != Updater.NOTIFICATION_ID &&
+                        Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
                     checkUpdates();
                 } else {
                     mRomUpdater.setLastUpdates(mNotificationInfo.mPackageInfosRom);
                 }
-            } else {
+            } else if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
                 checkUpdates();
+            } else {
+                Utils.createToast(App.getContext().getString(R.string.no_connection));
             }
             if (DownloadHelper.isDownloading(true) || DownloadHelper.isDownloading(false)) {
                 setState(STATE_DOWNLOAD, true, false);
