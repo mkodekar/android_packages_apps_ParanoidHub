@@ -13,6 +13,7 @@
     <dimen name="header_underline_size">2dp</dimen>
     <dimen name="header_underline_top_margin">3dp</dimen>
     <dimen name="header_underline_bottom_margin">15dp</dimen>
+    <dimen name="drawerheader_height">200dp</dimen>
 
     <dimen name="card_horizontal_margin">20dp</dimen>
     <dimen name="card_vertical_margin">24dp</dimen>

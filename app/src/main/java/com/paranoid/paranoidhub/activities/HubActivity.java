@@ -1,13 +1,18 @@
 package com.paranoid.paranoidhub.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,6 +23,7 @@ import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -55,6 +61,7 @@ public class HubActivity extends AppCompatActivity
     private static final String GITHUB = "https://github.com/AOSPA-L";
     private static final String STATE = "STATE";
     private static final int PERIOD = 2000;
+    private static final int select_photo = 1;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private LinearLayout mDrawer;
@@ -181,11 +188,39 @@ public class HubActivity extends AppCompatActivity
         }
 
         mSplash.finish();
+
+        clickpic();
     }
 
     public void setDownloadCallback(DownloadHelper.DownloadCallback downloadCallback) {
         mDownloadCallback = downloadCallback;
     }
+
+    public void clickpic() {
+        ImageView hidden = (ImageView) findViewById(R.id.drawer_header);
+        hidden.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                new AlertDialog.Builder(v.getContext()).setItems(v.getResources()
+                        .getStringArray(R.array.main_header_picture_items), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                picker();
+                                break;
+                            case 1:
+                                Resources res = getResources();
+                                res.getDrawable(R.drawable.drawer_bg);
+                                break;
+                        }
+
+                    }
+                }).show();
+            }
+        });
+    }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -460,6 +495,34 @@ public class HubActivity extends AppCompatActivity
             case STATE_INSTALL:
                 getSupportActionBar().setTitle(R.string.install);
                 break;
+        }
+    }
+
+    void picker() {
+        Intent in = new Intent(Intent.ACTION_PICK);
+        in.setType("image/*");
+        startActivityForResult(in, select_photo);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == select_photo && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+            Cursor cursor = getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+            ImageView imageView = (ImageView) findViewById(R.id.drawer_header);
+            imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+
         }
     }
 
