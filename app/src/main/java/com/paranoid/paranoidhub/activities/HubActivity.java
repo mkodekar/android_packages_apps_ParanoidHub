@@ -1,19 +1,17 @@
 package com.paranoid.paranoidhub.activities;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -56,26 +54,23 @@ public class HubActivity extends AppCompatActivity
     private static final String CROWDIN = "https://crowdin.com/project/aospa-legacy";
     private static final String GITHUB = "https://github.com/AOSPA-L";
     private static final String STATE = "STATE";
+    private static final int PERIOD = 2000;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private LinearLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
-
     private RebootHelper mRebootHelper;
     private DownloadHelper.DownloadCallback mDownloadCallback;
-
     private SystemCard mSystemCard;
     private UpdatesCard mUpdatesCard;
     private SettingsCard mSettingsCard;
     private DownloadCard mDownloadCard;
     private InstallCard mInstallCard;
-
     private RomUpdater mRomUpdater;
     private OTAUtils.NotificationInfo mNotificationInfo;
-
     private LinearLayout mCardsLayout;
     private CharSequence mTitle;
-
+    private long lastPressedTime;
     private Context mContext;
     private Bundle mSavedInstanceState;
 
@@ -283,6 +278,25 @@ public class HubActivity extends AppCompatActivity
         mDrawerLayout.closeDrawer(mDrawer);
     }
 
+    // not so fast (troll face)
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            switch (event.getAction()) {
+                case KeyEvent.ACTION_DOWN:
+                    if (event.getDownTime() - lastPressedTime < PERIOD) {
+                        finish();
+                    } else if (getApplicationContext() != null) {
+                        //Let user know tapping again will truely exit app
+                        mDrawerLayout.closeDrawer(mDrawer);
+                        Utils.createToast(App.getContext().getString(R.string.exit));
+                        lastPressedTime = event.getEventTime();
+                    }
+                    return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         mNotificationInfo = null;
@@ -444,6 +458,14 @@ public class HubActivity extends AppCompatActivity
                 getSupportActionBar().setTitle(R.string.install);
                 break;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d("ParanoidHub", "exiting");
+        int pid = android.os.Process.myPid();
+        android.os.Process.killProcess(pid);
+        super.onDestroy();
     }
 
 }

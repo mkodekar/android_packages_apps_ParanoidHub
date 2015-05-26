@@ -121,4 +121,5 @@
     <string name="time_notifications_five_hours">5 hours</string>
     <string name="time_notifications_daily">Daily</string>
     <string name="no_connection">No Connection Found!</string>
+    <string name="exit">Press again to exit</string>
 </resources>
