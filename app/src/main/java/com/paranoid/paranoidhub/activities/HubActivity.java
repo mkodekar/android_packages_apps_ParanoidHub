@@ -15,7 +15,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,7 +59,6 @@ public class HubActivity extends AppCompatActivity
     private static final String CROWDIN = "https://crowdin.com/project/aospa-legacy";
     private static final String GITHUB = "https://github.com/AOSPA-L";
     private static final String STATE = "STATE";
-    private static final int PERIOD = 2000;
     private static final int select_photo = 1;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -77,7 +75,6 @@ public class HubActivity extends AppCompatActivity
     private OTAUtils.NotificationInfo mNotificationInfo;
     private LinearLayout mCardsLayout;
     private CharSequence mTitle;
-    private long lastPressedTime;
     private Context mContext;
     private Bundle mSavedInstanceState;
 
@@ -316,23 +313,15 @@ public class HubActivity extends AppCompatActivity
         mDrawerLayout.closeDrawer(mDrawer);
     }
 
-    // not so fast (troll face)
+    // Properly handle back key event
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-            switch (event.getAction()) {
-                case KeyEvent.ACTION_DOWN:
-                    if (event.getDownTime() - lastPressedTime < PERIOD) {
-                        finish();
-                    } else if (getApplicationContext() != null) {
-                        //Let user know tapping again will truely exit app
-                        mDrawerLayout.closeDrawer(mDrawer);
-                        Utils.createToast(App.getContext().getString(R.string.exit));
-                        lastPressedTime = event.getEventTime();
-                    }
-                    return true;
-            }
-        }
-        return false;
+        if ((event.getKeyCode() == KeyEvent.KEYCODE_BACK)
+                && (event.getAction() == KeyEvent.ACTION_DOWN)) {
+            if (mDrawerLayout.isDrawerOpen(mDrawer)) {
+                mDrawerLayout.closeDrawer(mDrawer);
+            } else finish();
+            return true;
+        } else return false;
     }
 
     @Override
@@ -525,13 +514,4 @@ public class HubActivity extends AppCompatActivity
 
         }
     }
-
-    @Override
-    public void onDestroy() {
-        Log.d("ParanoidHub", "exiting");
-        int pid = android.os.Process.myPid();
-        android.os.Process.killProcess(pid);
-        super.onDestroy();
-    }
-
 }
