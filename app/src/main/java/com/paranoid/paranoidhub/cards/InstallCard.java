@@ -119,6 +119,8 @@ public class InstallCard extends Card implements RequestFileCallback {
 
         if (isExpanded()) {
             mAdditional.setVisibility(View.VISIBLE);
+        } else {
+            expand();
         }
     }
 
