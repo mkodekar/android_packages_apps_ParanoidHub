@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 
 public class SettingsHelper {
     public static final String PROPERTY_CHECK_TIME = "checktime";
+    public static final String PROPERTY_DRAWER_IMAGE = "drawerImage";
 
     public static final String DOWNLOAD_ROM_ID = "download_rom_id";
     public static final String DOWNLOAD_ROM_MD5 = "download_rom_md5";
@@ -16,7 +17,6 @@ public class SettingsHelper {
     private static SharedPreferences settings;
 
     public SettingsHelper(Context context) {
-
         settings = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
@@ -30,9 +30,9 @@ public class SettingsHelper {
             removePreference(DOWNLOAD_ROM_MD5);
             removePreference(DOWNLOAD_ROM_FILENAME);
         } else {
-            savePreference(DOWNLOAD_ROM_ID, String.valueOf(id));
-            savePreference(DOWNLOAD_ROM_MD5, md5);
-            savePreference(DOWNLOAD_ROM_FILENAME, fileName);
+            setPreference(DOWNLOAD_ROM_ID, String.valueOf(id));
+            setPreference(DOWNLOAD_ROM_MD5, md5);
+            setPreference(DOWNLOAD_ROM_FILENAME, fileName);
         }
     }
 
@@ -48,13 +48,17 @@ public class SettingsHelper {
         return settings.getString(DOWNLOAD_ROM_FILENAME, null);
     }
 
-    public static void savePreference(String preference, String value) {
+    public static String getPreference(String key) {
+        return settings.getString(key, null);
+    }
+
+    public static void setPreference(String preference, String value) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(preference, value);
         editor.commit();
     }
 
-    public static void savePreference(String preference, int value) {
+    public static void setPreference(String preference, int value) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(preference, value);
         editor.commit();

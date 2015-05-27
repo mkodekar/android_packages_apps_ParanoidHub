@@ -36,6 +36,7 @@ import com.paranoid.paranoidhub.cards.UpdatesCard;
 import com.paranoid.paranoidhub.helpers.DownloadHelper;
 import com.paranoid.paranoidhub.helpers.RebootHelper;
 import com.paranoid.paranoidhub.helpers.RecoveryHelper;
+import com.paranoid.paranoidhub.helpers.SettingsHelper;
 import com.paranoid.paranoidhub.updater.RomUpdater;
 import com.paranoid.paranoidhub.updater.Updater;
 import com.paranoid.paranoidhub.utils.IOUtils;
@@ -48,7 +49,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HubActivity extends AppCompatActivity
-        implements Updater.UpdaterListener, DownloadHelper.DownloadCallback, AdapterView.OnItemClickListener {
+        implements Updater.UpdaterListener, DownloadHelper.DownloadCallback, AdapterView.OnItemClickListener,
+        ImageView.OnClickListener {
 
     public static final int STATE_UPDATES = 0;
     public static final int STATE_DOWNLOAD = 1;
@@ -64,6 +66,7 @@ public class HubActivity extends AppCompatActivity
     private ListView mDrawerList;
     private LinearLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
+    private ImageView mDrawerImage;
     private RebootHelper mRebootHelper;
     private DownloadHelper.DownloadCallback mDownloadCallback;
     private SystemCard mSystemCard;
@@ -108,6 +111,7 @@ public class HubActivity extends AppCompatActivity
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawer = (LinearLayout) findViewById(R.id.drawer);
+        mDrawerImage = (ImageView) findViewById(R.id.drawer_header);
         Splash mSplash = (Splash) findViewById(R.id.splash_view);
 
         mDrawerList.setAdapter(new ArrayAdapter<>(
@@ -139,6 +143,7 @@ public class HubActivity extends AppCompatActivity
         };
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerImage.setOnClickListener(this);
 
         RecoveryHelper mRecoveryHelper = new RecoveryHelper(this);
         mRebootHelper = new RebootHelper(mRecoveryHelper);
@@ -186,38 +191,15 @@ public class HubActivity extends AppCompatActivity
 
         mSplash.finish();
 
-        clickpic();
+        String customImagePath = SettingsHelper.getPreference(SettingsHelper.PROPERTY_DRAWER_IMAGE);
+        if (customImagePath != null) {
+            mDrawerImage.setImageBitmap(BitmapFactory.decodeFile(customImagePath));
+        }
     }
 
     public void setDownloadCallback(DownloadHelper.DownloadCallback downloadCallback) {
         mDownloadCallback = downloadCallback;
     }
-
-    public void clickpic() {
-        ImageView hidden = (ImageView) findViewById(R.id.drawer_header);
-        hidden.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                new AlertDialog.Builder(v.getContext()).setItems(v.getResources()
-                        .getStringArray(R.array.main_header_picture_items), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0:
-                                picker();
-                                break;
-                            case 1:
-                                Resources res = getResources();
-                                res.getDrawable(R.drawable.drawer_bg);
-                                break;
-                        }
-
-                    }
-                }).show();
-            }
-        });
-    }
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -487,10 +469,10 @@ public class HubActivity extends AppCompatActivity
         }
     }
 
-    void picker() {
-        Intent in = new Intent(Intent.ACTION_PICK);
-        in.setType("image/*");
-        startActivityForResult(in, select_photo);
+    private void drawerImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, select_photo);
     }
 
     @Override
@@ -509,9 +491,28 @@ public class HubActivity extends AppCompatActivity
             String picturePath = cursor.getString(columnIndex);
             cursor.close();
 
-            ImageView imageView = (ImageView) findViewById(R.id.drawer_header);
-            imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-
+            mDrawerImage.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+            SettingsHelper.setPreference(SettingsHelper.PROPERTY_DRAWER_IMAGE, picturePath);
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        new AlertDialog.Builder(v.getContext()).setItems(v.getResources()
+                .getStringArray(R.array.main_header_picture_items), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        drawerImagePicker();
+                        break;
+                    case 1:
+                        SettingsHelper.removePreference(SettingsHelper.PROPERTY_DRAWER_IMAGE);
+                        mDrawerImage.setImageResource(R.drawable.drawer_bg);
+                        break;
+                }
+
+            }
+        }).show();
     }
 }

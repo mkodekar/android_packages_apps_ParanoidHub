@@ -56,7 +56,7 @@ public class SettingsCard extends Card {
         seekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
-                SettingsHelper.savePreference(SettingsHelper.PROPERTY_CHECK_TIME,
+                SettingsHelper.setPreference(SettingsHelper.PROPERTY_CHECK_TIME,
                         value * 3600 * 1000); //in ms
             }
 
@@ -86,7 +86,7 @@ public class SettingsCard extends Card {
         super.expand();
         if (seekBar != null) {
             seekBar.setVisibility(View.VISIBLE);
-            SettingsHelper.savePreference(SettingsHelper.PROPERTY_CHECK_TIME,
+            SettingsHelper.setPreference(SettingsHelper.PROPERTY_CHECK_TIME,
                     SettingsHelper.DEFAULT_CHECK_TIME);
             seekBar.setProgress(SettingsHelper.getCheckTime() / 3600 / 1000);
         }
@@ -96,7 +96,7 @@ public class SettingsCard extends Card {
     public void collapse() {
         super.collapse();
         seekBar.setVisibility(View.GONE);
-        SettingsHelper.savePreference(SettingsHelper.PROPERTY_CHECK_TIME, -1);
+        SettingsHelper.setPreference(SettingsHelper.PROPERTY_CHECK_TIME, -1);
     }
 
 }
