@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!--
   Copyright 2014 ParanoidAndroid Project
 
-  This file is part of Paranoid OTA.
+  This file is part of Paranoid Hub.
 
   Paranoid OTA is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -27,46 +27,30 @@
         android:id="@+id/mainlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin">
+        android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="@color/colorPrimary"
-            android:theme="@style/ActionBarStyle"
-            app:contentInsetLeft="72dp"
-            app:contentInsetStart="72dp"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+        <include layout="@layout/toolbar" />
 
         <ScrollView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
-
             <LinearLayout
                 android:id="@+id/cards_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin" />
         </ScrollView>
 
     </LinearLayout>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
 
         <FrameLayout
             android:id="@+id/content_frame"
@@ -80,14 +64,14 @@
 
     </RelativeLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:id="@+id/drawer"
         android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:orientation="vertical">
 
-        <include layout="@layout/drawer_header"></include>
+        <include layout="@layout/drawer_header" />
         
         <ListView
             android:id="@+id/left_drawer"
