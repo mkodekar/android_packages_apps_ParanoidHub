@@ -36,7 +36,7 @@ import com.paranoid.paranoidhub.cards.UpdatesCard;
 import com.paranoid.paranoidhub.helpers.DownloadHelper;
 import com.paranoid.paranoidhub.helpers.RebootHelper;
 import com.paranoid.paranoidhub.helpers.RecoveryHelper;
-import com.paranoid.paranoidhub.helpers.SettingsHelper;
+import com.paranoid.paranoidhub.helpers.PreferenceHelper;
 import com.paranoid.paranoidhub.updater.RomUpdater;
 import com.paranoid.paranoidhub.updater.Updater;
 import com.paranoid.paranoidhub.utils.IOUtils;
@@ -191,7 +191,7 @@ public class HubActivity extends AppCompatActivity
 
         mSplash.finish();
 
-        String customImagePath = SettingsHelper.getPreference(SettingsHelper.PROPERTY_DRAWER_IMAGE);
+        String customImagePath = PreferenceHelper.getPreference(PreferenceHelper.PROPERTY_DRAWER_IMAGE, null);
         if (customImagePath != null) {
             mDrawerImage.setImageBitmap(BitmapFactory.decodeFile(customImagePath));
         }
@@ -492,7 +492,7 @@ public class HubActivity extends AppCompatActivity
             cursor.close();
 
             mDrawerImage.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-            SettingsHelper.setPreference(SettingsHelper.PROPERTY_DRAWER_IMAGE, picturePath);
+            PreferenceHelper.setPreference(PreferenceHelper.PROPERTY_DRAWER_IMAGE, picturePath);
         }
     }
 
@@ -507,7 +507,7 @@ public class HubActivity extends AppCompatActivity
                         drawerImagePicker();
                         break;
                     case 1:
-                        SettingsHelper.removePreference(SettingsHelper.PROPERTY_DRAWER_IMAGE);
+                        PreferenceHelper.removePreference(PreferenceHelper.PROPERTY_DRAWER_IMAGE);
                         mDrawerImage.setImageResource(R.drawable.drawer_bg);
                         break;
                 }

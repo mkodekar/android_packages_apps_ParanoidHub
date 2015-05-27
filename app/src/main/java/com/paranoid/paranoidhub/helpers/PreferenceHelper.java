@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-public class SettingsHelper {
+public class PreferenceHelper {
     public static final String PROPERTY_CHECK_TIME = "checktime";
     public static final String PROPERTY_DRAWER_IMAGE = "drawerImage";
 
@@ -16,12 +16,8 @@ public class SettingsHelper {
 
     private static SharedPreferences settings;
 
-    public SettingsHelper(Context context) {
+    public PreferenceHelper(Context context) {
         settings = PreferenceManager.getDefaultSharedPreferences(context);
-    }
-
-    public static int getCheckTime() {
-        return settings.getInt(PROPERTY_CHECK_TIME, DEFAULT_CHECK_TIME);
     }
 
     public void setDownloadRomId(Long id, String md5, String fileName) {
@@ -48,8 +44,12 @@ public class SettingsHelper {
         return settings.getString(DOWNLOAD_ROM_FILENAME, null);
     }
 
-    public static String getPreference(String key) {
-        return settings.getString(key, null);
+    public static String getPreference(String key, String defaultValue) {
+        return settings.getString(key, defaultValue);
+    }
+
+    public static int getPreference(String key, int defaultValue) {
+        return settings.getInt(key, defaultValue);
     }
 
     public static void setPreference(String preference, String value) {

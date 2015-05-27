@@ -37,7 +37,7 @@ import java.io.File;
 public class DownloadHelper {
 
     private static Context sContext;
-    private static SettingsHelper sSettingsHelper;
+    private static PreferenceHelper sSettingsHelper;
     private static Handler sUpdateHandler = new Handler();
 
     private static DownloadManager sDownloadManager;
@@ -98,7 +98,7 @@ public class DownloadHelper {
         if (sDownloadManager == null) {
             sDownloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
         }
-        sSettingsHelper = new SettingsHelper(sContext);
+        sSettingsHelper = new PreferenceHelper(sContext);
         registerCallback(callback);
         checkIfDownloading();
     }
@@ -121,7 +121,7 @@ public class DownloadHelper {
         if (sDownloadManager == null) {
             sDownloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
         }
-        sSettingsHelper = new SettingsHelper(sContext);
+        sSettingsHelper = new PreferenceHelper(sContext);
         checkDownloadFinished(downloadId, true, true);
     }
 

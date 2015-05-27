@@ -27,7 +27,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.paranoid.paranoidhub.helpers.SettingsHelper;
+import com.paranoid.paranoidhub.helpers.PreferenceHelper;
 import com.paranoid.paranoidhub.utils.OTAUtils;
 import com.paranoid.paranoidhub.utils.Version;
 
@@ -47,7 +47,7 @@ public abstract class Updater implements Response.Listener<JSONObject>, Response
     private PackageInfo[] mLastUpdates = new PackageInfo[0];
     private List<UpdaterListener> mListeners = new ArrayList<UpdaterListener>();
     private RequestQueue mQueue;
-    private SettingsHelper mSettingsHelper;
+    private PreferenceHelper mSettingsHelper;
     private Server mServer;
     private boolean mScanning = false;
     private boolean mFromAlarm;
@@ -70,7 +70,7 @@ public abstract class Updater implements Response.Listener<JSONObject>, Response
         return mContext;
     }
 
-    public SettingsHelper getSettingsHelper() {
+    public PreferenceHelper getSettingsHelper() {
         return mSettingsHelper;
     }
 
@@ -98,10 +98,11 @@ public abstract class Updater implements Response.Listener<JSONObject>, Response
             return;
         }
         if (mSettingsHelper == null) {
-            mSettingsHelper = new SettingsHelper(getContext());
+            mSettingsHelper = new PreferenceHelper(getContext());
         }
         if (mFromAlarm) {
-            if (!force && (mSettingsHelper.getCheckTime() == 0)) {
+            if (!force && (mSettingsHelper.getPreference(mSettingsHelper.PROPERTY_CHECK_TIME,
+                    mSettingsHelper.DEFAULT_CHECK_TIME) == 0)) {
                 return;
             }
         }

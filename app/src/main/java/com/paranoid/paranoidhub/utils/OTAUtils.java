@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.paranoid.paranoidhub.R;
 import com.paranoid.paranoidhub.activities.HubActivity;
-import com.paranoid.paranoidhub.helpers.SettingsHelper;
+import com.paranoid.paranoidhub.helpers.PreferenceHelper;
 import com.paranoid.paranoidhub.receivers.NotificationAlarm;
 import com.paranoid.paranoidhub.updater.Updater;
 
@@ -155,9 +155,8 @@ public class OTAUtils {
     }
 
     public static void setAlarm(Context context, boolean trigger) {
-
-        SettingsHelper helper = new SettingsHelper(context);
-        setAlarm(context, helper.getCheckTime(), trigger);
+        setAlarm(context, PreferenceHelper.getPreference(PreferenceHelper.PROPERTY_CHECK_TIME,
+                PreferenceHelper.DEFAULT_CHECK_TIME), trigger);
     }
 
     public static void setAlarm(Context context, long time, boolean trigger) {

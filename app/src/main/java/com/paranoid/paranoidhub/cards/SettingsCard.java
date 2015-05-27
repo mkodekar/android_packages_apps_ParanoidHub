@@ -25,7 +25,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.paranoid.paranoidhub.R;
-import com.paranoid.paranoidhub.helpers.SettingsHelper;
+import com.paranoid.paranoidhub.helpers.PreferenceHelper;
 import com.paranoid.paranoidhub.widget.Card;
 
 import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
@@ -46,7 +46,8 @@ public class SettingsCard extends Card {
         } else {
             super.expand();
         }
-        seekBar.setProgress(SettingsHelper.getCheckTime() / 3600 / 1000);
+        seekBar.setProgress(PreferenceHelper.getPreference(PreferenceHelper.PROPERTY_CHECK_TIME,
+                PreferenceHelper.DEFAULT_CHECK_TIME) / 3600 / 1000);
         seekBar.setMin(1);
         seekBar.setMax(48);
         seekBar.setTrackColor(getResources().getColor(R.color.red_900));
@@ -56,7 +57,7 @@ public class SettingsCard extends Card {
         seekBar.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             @Override
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
-                SettingsHelper.setPreference(SettingsHelper.PROPERTY_CHECK_TIME,
+                PreferenceHelper.setPreference(PreferenceHelper.PROPERTY_CHECK_TIME,
                         value * 3600 * 1000); //in ms
             }
 
@@ -78,7 +79,8 @@ public class SettingsCard extends Card {
     }
 
     protected boolean showExpanded() {
-        return SettingsHelper.getCheckTime() > 0;
+        return PreferenceHelper.getPreference(PreferenceHelper.PROPERTY_CHECK_TIME,
+                PreferenceHelper.DEFAULT_CHECK_TIME) > 0;
     }
 
     @Override
@@ -86,9 +88,10 @@ public class SettingsCard extends Card {
         super.expand();
         if (seekBar != null) {
             seekBar.setVisibility(View.VISIBLE);
-            SettingsHelper.setPreference(SettingsHelper.PROPERTY_CHECK_TIME,
-                    SettingsHelper.DEFAULT_CHECK_TIME);
-            seekBar.setProgress(SettingsHelper.getCheckTime() / 3600 / 1000);
+            PreferenceHelper.setPreference(PreferenceHelper.PROPERTY_CHECK_TIME,
+                    PreferenceHelper.DEFAULT_CHECK_TIME);
+            seekBar.setProgress(PreferenceHelper.getPreference(PreferenceHelper.PROPERTY_CHECK_TIME,
+                    PreferenceHelper.DEFAULT_CHECK_TIME) / 3600 / 1000);
         }
     }
 
@@ -96,7 +99,7 @@ public class SettingsCard extends Card {
     public void collapse() {
         super.collapse();
         seekBar.setVisibility(View.GONE);
-        SettingsHelper.setPreference(SettingsHelper.PROPERTY_CHECK_TIME, -1);
+        PreferenceHelper.setPreference(PreferenceHelper.PROPERTY_CHECK_TIME, -1);
     }
 
 }
