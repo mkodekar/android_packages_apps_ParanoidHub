@@ -149,16 +149,20 @@ public class HubActivity extends AppCompatActivity
             mCardsLayout.setAnimation(AnimationUtils.loadAnimation(this, R.anim.up_from_bottom));
 
             if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
-                if (mNotificationInfo != null && (mNotificationInfo.mNotificationId != Updater.NOTIFICATION_ID)) {
-                    checkUpdates();
+                if (mNotificationInfo != null) {
+                    if (mNotificationInfo.mNotificationId != Updater.NOTIFICATION_ID) {
+                        checkUpdates();
+                    } else {
+                        mRomUpdater.setLastUpdates(mNotificationInfo.mPackageInfosRom);
+                    }
                 } else {
-                    mRomUpdater.setLastUpdates(mNotificationInfo.mPackageInfosRom);
+                    checkUpdates();
                 }
             } else {
                 Utils.createToast(App.getContext().getString(R.string.no_connection));
             }
 
-            if (DownloadHelper.isDownloading(true) || DownloadHelper.isDownloading(false)) {
+            if (DownloadHelper.isDownloading()) {
                 setState(STATE_DOWNLOAD, true, false);
             } else if (mState != STATE_INSTALL) {
                 setState(STATE_UPDATES, true, false);
@@ -327,16 +331,14 @@ public class HubActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDownloadFinished(Uri uri, String md5, boolean isRom) {
+    public void onDownloadFinished(Uri uri, String md5) {
         if (mDownloadCallback != null) {
-            mDownloadCallback.onDownloadFinished(uri, md5, isRom);
+            mDownloadCallback.onDownloadFinished(uri, md5);
         }
         if (uri == null) {
-            if (!DownloadHelper.isDownloading(!isRom)) {
-                setState(STATE_UPDATES, true, false);
-            }
+            setState(STATE_UPDATES, true, false);
         } else {
-            setState(STATE_INSTALL, true, null, uri, md5, isRom, false);
+            setState(STATE_INSTALL, true, null, uri, md5, false);
         }
     }
 
@@ -373,11 +375,11 @@ public class HubActivity extends AppCompatActivity
     }
 
     public void setState(int state, boolean animate, boolean fromRotation) {
-        setState(state, animate, null, null, null, false, fromRotation);
+        setState(state, animate, null, null, null, fromRotation);
     }
 
     public void setState(int state, boolean animate, Updater.PackageInfo[] infos,
-                         Uri uri, String md5, boolean isRom, boolean fromRotation) {
+                         Uri uri, String md5, boolean fromRotation) {
         mState = state;
         switch (state) {
             case STATE_UPDATES:
@@ -409,15 +411,9 @@ public class HubActivity extends AppCompatActivity
                     mInstallCard = new InstallCard(mContext, null, mRebootHelper,
                             mSavedInstanceState);
                 }
-                if (!DownloadHelper.isDownloading(!isRom)) {
-                    addCards(new Card[]{
-                            mInstallCard
-                    }, !fromRotation, true);
-                } else {
-                    addCards(new Card[]{
-                            mInstallCard
-                    }, true, false);
-                }
+                addCards(new Card[]{
+                        mInstallCard
+                }, !fromRotation, true);
                 if (uri != null) {
                     mInstallCard.addFile(uri, md5);
                 }

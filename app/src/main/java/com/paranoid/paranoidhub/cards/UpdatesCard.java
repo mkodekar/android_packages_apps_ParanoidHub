@@ -104,7 +104,7 @@ public class UpdatesCard extends Card implements UpdaterListener, OnCheckedChang
             public void onClick(int id) {
                 HubActivity activity = (HubActivity) getContext();
                 activity.setState(HubActivity.STATE_DOWNLOAD, true, getPackages(), null, null,
-                        false, false);
+                        false);
             }
 
         });

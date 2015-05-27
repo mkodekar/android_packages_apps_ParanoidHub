@@ -100,13 +100,12 @@ public class DownloadCard extends Card implements DownloadCallback {
 
         String names = "";
         for (int i = 0; infos != null && i < infos.length; i++) {
-            boolean isRom = true;
             names += infos[i].getFilename() + "\n";
-            if (DownloadHelper.isDownloading(isRom)) {
+            if (DownloadHelper.isDownloading()) {
                 int resId = R.string.already_downloading_rom;
                 Toast.makeText(context, resId, Toast.LENGTH_LONG).show();
                 ((HubActivity) context).setState(HubActivity.STATE_UPDATES,
-                        true, null, null, null, false, false);
+                        true, null, null, null, false);
                 return;
             }
         }
@@ -117,8 +116,7 @@ public class DownloadCard extends Card implements DownloadCallback {
         for (int i = 0; infos != null && i < infos.length; i++) {
             DownloadHelper.registerCallback(mActivity);
             DownloadHelper.downloadFile(infos[i].getPath(),
-                    infos[i].getFilename(), infos[i].getMd5(),
-                    true);
+                    infos[i].getFilename(), infos[i].getMd5());
         }
     }
 
@@ -185,7 +183,7 @@ public class DownloadCard extends Card implements DownloadCallback {
     }
 
     @Override
-    public void onDownloadFinished(Uri uri, final String md5, boolean isRom) {
+    public void onDownloadFinished(Uri uri, final String md5) {
         mCancel.setEnabled(false);
         mDownloadProgress = -1;
         mWaitProgressBar.setVisibility(View.GONE);
