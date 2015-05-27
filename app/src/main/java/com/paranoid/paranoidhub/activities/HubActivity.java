@@ -148,24 +148,20 @@ public class HubActivity extends AppCompatActivity
 
             mCardsLayout.setAnimation(AnimationUtils.loadAnimation(this, R.anim.up_from_bottom));
 
-            if (mNotificationInfo != null) {
-                if (mNotificationInfo.mNotificationId != Updater.NOTIFICATION_ID &&
-                        Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
+            if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
+                if (mNotificationInfo != null && (mNotificationInfo.mNotificationId != Updater.NOTIFICATION_ID)) {
                     checkUpdates();
                 } else {
                     mRomUpdater.setLastUpdates(mNotificationInfo.mPackageInfosRom);
                 }
-            } else if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
-                checkUpdates();
             } else {
                 Utils.createToast(App.getContext().getString(R.string.no_connection));
             }
+
             if (DownloadHelper.isDownloading(true) || DownloadHelper.isDownloading(false)) {
                 setState(STATE_DOWNLOAD, true, false);
-            } else {
-                if (mState != STATE_INSTALL) {
-                    setState(STATE_UPDATES, true, false);
-                }
+            } else if (mState != STATE_INSTALL) {
+                setState(STATE_UPDATES, true, false);
             }
         } else {
             setState(mSavedInstanceState.getInt(STATE), false, true);
@@ -221,7 +217,7 @@ public class HubActivity extends AppCompatActivity
     public void checkUpdates() {
         if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
             mRomUpdater.check();
-        } else if (!Utils.isNetworkAvailable(this) || !Utils.isOnWifi(this)) {
+        } else {
             Utils.createToast(App.getContext().getString(R.string.no_connection));
         }
     }
@@ -249,7 +245,7 @@ public class HubActivity extends AppCompatActivity
                 if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
                     browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(CHANGELOG));
                     startActivity(browserIntent);
-                } else if (!Utils.isNetworkAvailable(this) || !Utils.isOnWifi(this)) {
+                } else {
                     Utils.createToast(App.getContext().getString(R.string.no_connection));
                 }
                 break;
@@ -257,7 +253,7 @@ public class HubActivity extends AppCompatActivity
                 if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
                     browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(COMMUNITY));
                     startActivity(browserIntent);
-                } else if (!Utils.isNetworkAvailable(this) || !Utils.isOnWifi(this)) {
+                } else {
                     Utils.createToast(App.getContext().getString(R.string.no_connection));
                 }
                 break;
@@ -265,7 +261,7 @@ public class HubActivity extends AppCompatActivity
                 if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
                     browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(CROWDIN));
                     startActivity(browserIntent);
-                } else if (!Utils.isNetworkAvailable(this) || !Utils.isOnWifi(this)) {
+                } else {
                     Utils.createToast(App.getContext().getString(R.string.no_connection));
                 }
                 break;
@@ -273,7 +269,7 @@ public class HubActivity extends AppCompatActivity
                 if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
                     browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(GITHUB));
                     startActivity(browserIntent);
-                } else if (!Utils.isNetworkAvailable(this) || !Utils.isOnWifi(this)) {
+                } else {
                     Utils.createToast(App.getContext().getString(R.string.no_connection));
                 }
                 break;
