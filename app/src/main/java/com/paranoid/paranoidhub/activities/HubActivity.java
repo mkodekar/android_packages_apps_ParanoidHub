@@ -451,7 +451,7 @@ public class HubActivity extends AppCompatActivity
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(intent, select_photo);
-        mDrawerImage.setAnimation(AnimationUtils.loadAnimation(this, R.anim.up_from_bottom));
+        mDrawerImage.setAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
     }
 
     @Override
@@ -488,7 +488,7 @@ public class HubActivity extends AppCompatActivity
                     case 1:
                         PreferenceHelper.removePreference(PreferenceHelper.PROPERTY_DRAWER_IMAGE);
                         mDrawerImage.setImageResource(R.drawable.drawer_bg);
-                        mDrawerImage.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.up_from_bottom));
+                        mDrawerImage.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_in));
                         break;
                 }
 
