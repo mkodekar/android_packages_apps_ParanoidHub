@@ -77,7 +77,6 @@ public class HubActivity extends AppCompatActivity
     private RomUpdater mRomUpdater;
     private OTAUtils.NotificationInfo mNotificationInfo;
     private LinearLayout mCardsLayout;
-    private CharSequence mTitle;
     private Context mContext;
     private Bundle mSavedInstanceState;
 
@@ -106,7 +105,6 @@ public class HubActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         mCardsLayout = (LinearLayout) findViewById(R.id.cards_layout);
-        mTitle = getTitle();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -128,19 +126,7 @@ public class HubActivity extends AppCompatActivity
                 toolbar,
                 R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
                 R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
-        ) {
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                updateTitle();
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle(R.string.app_name);
-            }
-        };
+        );
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerImage.setOnClickListener(this);
