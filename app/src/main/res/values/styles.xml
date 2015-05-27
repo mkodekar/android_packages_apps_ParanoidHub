@@ -7,7 +7,7 @@
         <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="android:colorAccent">@color/red_900</item>
-        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
+        <item name="android:navigationBarColor">@color/red_900</item>
 
         <item name="android:checkboxStyle">@style/Checkbox</item>
         <!-- android transitions -->
