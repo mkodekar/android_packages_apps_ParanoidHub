@@ -155,7 +155,8 @@ public class OTAUtils {
     }
 
     public static void setAlarm(Context context, boolean trigger) {
-        setAlarm(context, PreferenceHelper.getPreference(PreferenceHelper.PROPERTY_CHECK_TIME,
+        PreferenceHelper preferenceHelper = new PreferenceHelper(context);
+        setAlarm(context, preferenceHelper.getPreference(PreferenceHelper.PROPERTY_CHECK_TIME,
                 PreferenceHelper.DEFAULT_CHECK_TIME), trigger);
     }
 
