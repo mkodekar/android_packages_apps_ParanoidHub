@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.PowerManager;
 import android.os.Vibrator;
+import android.support.design.widget.Snackbar;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,8 +35,13 @@ public class Utils {
     public static View myDialogView = null;
 
     public static void createToast(String string) {
-        Toast toast = Toast.makeText(App.getContext(), string, Toast.LENGTH_LONG);
-        toast.show();
+        Toast.makeText(App.getContext(), string, Toast.LENGTH_LONG)
+             .show();
+    }
+
+    public static void createSnackbar(View parentLayout, String string) {
+        Snackbar.make(parentLayout, string, Snackbar.LENGTH_LONG)
+                .show();
     }
 
     public static void createInputDialog(String title, DialogInterface.OnClickListener positiveListener,

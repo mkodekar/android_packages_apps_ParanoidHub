@@ -7,9 +7,11 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -22,21 +24,24 @@ import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.instabug.library.Instabug;
 import com.paranoid.paranoidhub.App;
 import com.paranoid.paranoidhub.R;
 import com.paranoid.paranoidhub.cards.DownloadCard;
+import com.paranoid.paranoidhub.cards.FeedbackCard;
 import com.paranoid.paranoidhub.cards.InstallCard;
 import com.paranoid.paranoidhub.cards.SettingsCard;
 import com.paranoid.paranoidhub.cards.SystemCard;
 import com.paranoid.paranoidhub.cards.UpdatesCard;
 import com.paranoid.paranoidhub.helpers.DownloadHelper;
+import com.paranoid.paranoidhub.helpers.PreferenceHelper;
 import com.paranoid.paranoidhub.helpers.RebootHelper;
 import com.paranoid.paranoidhub.helpers.RecoveryHelper;
-import com.paranoid.paranoidhub.helpers.PreferenceHelper;
 import com.paranoid.paranoidhub.updater.RomUpdater;
 import com.paranoid.paranoidhub.updater.Updater;
 import com.paranoid.paranoidhub.utils.IOUtils;
@@ -56,27 +61,34 @@ public class HubActivity extends AppCompatActivity
     public static final int STATE_DOWNLOAD = 1;
     public static final int STATE_INSTALL = 2;
     public static final int STATE_FEEDBACK = 3;
+
     private static final String CHANGELOG = "https://plus.google.com/+Aospal";
     private static final String COMMUNITY = "https://plus.google.com/communities/103106032137232805260";
     private static final String CROWDIN = "https://crowdin.com/project/aospa-legacy";
     private static final String GITHUB = "https://github.com/AOSPA-L";
     private static final String STATE = "STATE";
+
     private static final int select_photo = 1;
+
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private LinearLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private ImageView mDrawerImage;
-    private RebootHelper mRebootHelper;
-    private DownloadHelper.DownloadCallback mDownloadCallback;
+    private LinearLayout mCardsLayout;
+    private FloatingActionButton mFloatingActionButton;
+
     private SystemCard mSystemCard;
     private UpdatesCard mUpdatesCard;
     private SettingsCard mSettingsCard;
     private DownloadCard mDownloadCard;
     private InstallCard mInstallCard;
+    private FeedbackCard mFeedbackCard;
+
+    private RebootHelper mRebootHelper;
+    private DownloadHelper.DownloadCallback mDownloadCallback;
     private RomUpdater mRomUpdater;
     private OTAUtils.NotificationInfo mNotificationInfo;
-    private LinearLayout mCardsLayout;
     private Context mContext;
     private Bundle mSavedInstanceState;
 
@@ -110,6 +122,7 @@ public class HubActivity extends AppCompatActivity
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawer = (LinearLayout) findViewById(R.id.drawer);
         mDrawerImage = (ImageView) findViewById(R.id.drawer_header);
+        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         Splash mSplash = (Splash) findViewById(R.id.splash_view);
 
         mDrawerList.setAdapter(new ArrayAdapter<>(
@@ -203,6 +216,9 @@ public class HubActivity extends AppCompatActivity
             case STATE_INSTALL:
                 mInstallCard.saveState(outState);
                 break;
+            case STATE_FEEDBACK:
+                mFeedbackCard.saveState(outState);
+                break;
         }
     }
 
@@ -234,15 +250,41 @@ public class HubActivity extends AppCompatActivity
                     break;
                 }
                 setState(STATE_UPDATES, true, false);
+                updateFAB(View.GONE, null, null);
                 break;
             case 1:
                 if (mState == STATE_INSTALL) {
                     break;
                 }
                 setState(STATE_INSTALL, true, false);
+                updateFAB(View.GONE, null, null);
                 break;
             case 2:
-                //TODO: Feedback
+                setState(STATE_FEEDBACK, true, false);
+                updateFAB(View.VISIBLE, getDrawable(R.drawable.ic_feedback_white_48dp), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Utils.createInputDialog(App.getContext().getString(R.string.feedback_title), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Instabug instabug = Instabug.getInstance();
+                                EditText inputText = (EditText) Utils.myDialogView.findViewById(R.id.dialog_input);
+                                String text = inputText.getText().toString() + "\n" + Utils.getDeviceInfo();
+                                instabug.reportBug(null, text, Utils.getEmail(),
+                                        new Instabug.OnSendBugReportListener() {
+                                            @Override
+                                            public void onBugReportSent(boolean success, String result) {
+                                                if (success) {
+                                                    Utils.createToast(App.getContext().getString(R.string.feedback_success));
+                                                } else {
+                                                    Utils.createToast(App.getContext().getString(R.string.feedback_failure));
+                                                }
+                                            }
+                                        });
+                            }
+                        }, null);
+                    }
+                });
                 break;
             case 3:
                 Intent browserIntent;
@@ -418,6 +460,14 @@ public class HubActivity extends AppCompatActivity
                     mInstallCard.addFile(uri, md5);
                 }
                 break;
+            case STATE_FEEDBACK:
+                if (mFeedbackCard == null) {
+                    mFeedbackCard = new FeedbackCard(mContext, null, mSavedInstanceState);
+                }
+                addCards(new Card[]{
+                        mFeedbackCard
+                }, animate, true);
+                break;
         }
         ((ArrayAdapter<String>) mDrawerList.getAdapter()).notifyDataSetChanged();
         updateTitle();
@@ -443,6 +493,9 @@ public class HubActivity extends AppCompatActivity
                 break;
             case STATE_INSTALL:
                 getSupportActionBar().setTitle(R.string.install);
+                break;
+            case STATE_FEEDBACK:
+                getSupportActionBar().setTitle(R.string.feedback);
                 break;
         }
     }
@@ -494,5 +547,12 @@ public class HubActivity extends AppCompatActivity
 
             }
         }).show();
+    }
+
+    private void updateFAB(int visibility, Drawable drawable, View.OnClickListener listener) {
+        mFloatingActionButton.setVisibility(visibility);
+        mFloatingActionButton.setBackgroundTintList(getResources().getColorStateList(R.color.red_700));
+        mFloatingActionButton.setImageDrawable(drawable);
+        mFloatingActionButton.setOnClickListener(listener);
     }
 }
