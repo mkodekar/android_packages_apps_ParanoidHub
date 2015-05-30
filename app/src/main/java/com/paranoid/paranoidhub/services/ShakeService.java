@@ -29,7 +29,7 @@ public class ShakeService extends Service {
             @Override
             public void onShake(int count) {
                 // Avoid non-desired shaking! (2 or more shakes and screenOn)
-                if (count > 1 && Utils.isScreenOn() && !Utils.isAppForegroung()) {
+                if (count > 1 && Utils.isScreenOn()) {
                     Utils.doVibrate(150);
                     // TODO: Implement global screenshot and send it as bitmap
                     Utils.createInputDialog(App.getContext().getString(R.string.feedback_title), new DialogInterface.OnClickListener() {

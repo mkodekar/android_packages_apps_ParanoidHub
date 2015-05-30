@@ -21,6 +21,7 @@ public class App extends Application {
         super.onCreate();
         mContext = this.getApplicationContext();
         Instabug.initialize(this, Constants.INSTABUG_TOKEN)
+                .setInvocationEvent(Instabug.IBGInvocationEvent.IBGInvocationEventNone)
                 .setShowIntroDialog(false)
                 .setEnableOverflowMenuItem(false);
 
