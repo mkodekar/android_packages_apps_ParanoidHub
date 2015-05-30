@@ -216,9 +216,6 @@ public class HubActivity extends AppCompatActivity
             case STATE_INSTALL:
                 mInstallCard.saveState(outState);
                 break;
-            case STATE_FEEDBACK:
-                mFeedbackCard.saveState(outState);
-                break;
         }
     }
 
@@ -464,9 +461,10 @@ public class HubActivity extends AppCompatActivity
                 if (mFeedbackCard == null) {
                     mFeedbackCard = new FeedbackCard(mContext, null, mSavedInstanceState);
                 }
-                addCards(new Card[]{
-                        mFeedbackCard
-                }, animate, true);
+                mCardsLayout.clearAnimation();
+                mCardsLayout.removeAllViews();
+                mCardsLayout.setAnimation(AnimationUtils.loadAnimation(this, R.anim.up_from_bottom));
+                mCardsLayout.addView(mFeedbackCard);
                 break;
         }
         ((ArrayAdapter<String>) mDrawerList.getAdapter()).notifyDataSetChanged();

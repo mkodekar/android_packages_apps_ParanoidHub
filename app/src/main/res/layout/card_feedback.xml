@@ -18,18 +18,15 @@
   along with Paranoid OTA.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/card_horizontal_margin"
-    android:paddingRight="@dimen/card_horizontal_margin"
-    android:paddingBottom="@dimen/card_horizontal_margin"
-    android:elevation="2dp">
+    android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:src="@drawable/feedback_bg"
+        android:scaleType="centerCrop" />
 
-</LinearLayout>
+</RelativeLayout>
