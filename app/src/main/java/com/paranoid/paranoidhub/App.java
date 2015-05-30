@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.instabug.library.Instabug;
 import com.paranoid.paranoidhub.services.ShakeService;
+import com.paranoid.paranoidhub.utils.Constants;
 import com.paranoid.paranoidhub.utils.Utils;
 
 public class App extends Application {
@@ -19,7 +20,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = this.getApplicationContext();
-        Instabug.initialize(this, "f30ca8f22134b9cfcd6f1c2c1621be45")
+        Instabug.initialize(this, Constants.INSTABUG_TOKEN)
                 .setShowIntroDialog(false)
                 .setEnableOverflowMenuItem(false);
 
