@@ -19,6 +19,7 @@
 
 package com.paranoid.paranoidhub.cards;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -47,14 +48,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressLint("ViewConstructor")
 public class InstallCard extends Card implements RequestFileCallback {
 
     private static final String FILES = "FILES";
 
     private RebootHelper mRebootHelper;
-    private List<File> mFiles = new ArrayList<File>();
+    private List<File> mFiles = new ArrayList<>();
     private LinearLayout mLayout;
-    private Item mAdd;
     private Item mInstall;
     private CheckBox mBackup;
     private CheckBox mWipeData;
@@ -71,7 +72,7 @@ public class InstallCard extends Card implements RequestFileCallback {
         mRebootHelper = rebootHelper;
 
         mLayout = (LinearLayout) findLayoutViewById(R.id.layout);
-        mAdd = (Item) findLayoutViewById(R.id.add);
+        Item mAdd = (Item) findLayoutViewById(R.id.add);
         mInstall = (Item) findLayoutViewById(R.id.install);
         mBackup = (CheckBox) findLayoutViewById(R.id.backup);
         mWipeData = (CheckBox) findLayoutViewById(R.id.wipedata);
@@ -213,6 +214,7 @@ public class InstallCard extends Card implements RequestFileCallback {
         mInstall.setEnabled(true);
     }
 
+    @SuppressLint("StringFormatMatches")
     private void showMd5Mismatch(String md5, String calculated, final File file) {
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
         alert.setTitle(R.string.md5_mismatch);

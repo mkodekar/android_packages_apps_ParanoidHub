@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressLint("ViewConstructor")
 public class UpdatesCard extends Card implements UpdaterListener, OnCheckedChangeListener {
 
     private static final String ROMS = "ROMS";
@@ -138,7 +139,7 @@ public class UpdatesCard extends Card implements UpdaterListener, OnCheckedChang
     @Override
     public void saveState(Bundle outState) {
         super.saveState(outState);
-        ArrayList<PackageInfo> mRoms = new ArrayList<PackageInfo>();
+        ArrayList<PackageInfo> mRoms = new ArrayList<>();
 
         mRoms.addAll(Arrays.asList(mRomUpdater.getLastUpdates()));
 
@@ -233,7 +234,7 @@ public class UpdatesCard extends Card implements UpdaterListener, OnCheckedChang
     }
 
     private PackageInfo[] getPackages() {
-        List<PackageInfo> list = new ArrayList<PackageInfo>();
+        List<PackageInfo> list = new ArrayList<>();
         for (int i = 0; i < mLayout.getChildCount(); i++) {
             View view = mLayout.getChildAt(i);
             if (view instanceof CheckBox) {

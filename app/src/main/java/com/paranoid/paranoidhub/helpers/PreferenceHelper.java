@@ -55,18 +55,18 @@ public class PreferenceHelper {
     public static void setPreference(String preference, String value) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(preference, value);
-        editor.commit();
+        editor.apply();
     }
 
     public static void setPreference(String preference, int value) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(preference, value);
-        editor.commit();
+        editor.apply();
     }
 
     public static void removePreference(String preference) {
         SharedPreferences.Editor editor = settings.edit();
         editor.remove(preference);
-        editor.commit();
+        editor.apply();
     }
 }

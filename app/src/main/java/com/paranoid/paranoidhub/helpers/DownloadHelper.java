@@ -53,12 +53,7 @@ public class DownloadHelper {
 
             long idRom = sSettingsHelper.getDownloadRomId();
 
-            long[] statusRom = sDownloadingRom ? getDownloadProgress(idRom) : new long[]{
-                    DownloadManager.STATUS_SUCCESSFUL,
-                    0,
-                    0,
-                    -1
-            };
+            long[] statusRom = getDownloadProgress(idRom);
 
             int status = DownloadManager.STATUS_SUCCESSFUL;
             if (statusRom[0] == DownloadManager.STATUS_FAILED) {
@@ -154,7 +149,7 @@ public class DownloadHelper {
                                 .getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
                         sCallback.onDownloadFinished(Uri.parse(uriString), md5);
                     }
-                    downloadSuccesful(id);
+                    downloadSuccesful();
                     break;
                 default:
                     cancelDownload(id);
@@ -163,9 +158,7 @@ public class DownloadHelper {
         } else {
             removeDownload(id, true);
         }
-        if (cursor != null) {
-            cursor.close();
-        }
+        cursor.close();
     }
 
     public static boolean isDownloading() {
@@ -187,9 +180,7 @@ public class DownloadHelper {
         request.setNotificationVisibility(Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setVisibleInDownloadsUi(false);
         request.setTitle(sContext.getResources().getString(R.string.download_title,
-                new Object[]{
-                        fileName
-                }));
+                fileName));
         File file = new File(IOUtils.DOWNLOAD_PATH);
         if (!file.exists()) {
             file.mkdirs();
@@ -211,7 +202,7 @@ public class DownloadHelper {
         sCallback.onDownloadFinished(null, null);
     }
 
-    private static void downloadSuccesful(long id) {
+    private static void downloadSuccesful() {
         sDownloadingRom = false;
         sSettingsHelper.setDownloadRomId(null, null, null);
         sUpdateHandler.removeCallbacks(sUpdateProgress);
@@ -286,9 +277,7 @@ public class DownloadHelper {
         query.setFilterById(romId);
         Cursor cursor = sDownloadManager.query(query);
         sDownloadingRom = cursor.moveToFirst();
-        if (cursor != null) {
-            cursor.close();
-        }
+        cursor.close();
         if (romId >= 0L && !sDownloadingRom) {
             removeDownload(romId, false);
         }
@@ -296,7 +285,7 @@ public class DownloadHelper {
 
     private static int getDownloadError(Cursor cursor) {
         int columnReason = cursor.getColumnIndex(DownloadManager.COLUMN_REASON);
-        int reasonText = -1;
+        int reasonText;
         try {
             int reason = cursor.getInt(columnReason);
             switch (reason) {

@@ -45,7 +45,7 @@ public abstract class Updater implements Response.Listener<JSONObject>, Response
     private Context mContext;
     private Server[] mServers;
     private PackageInfo[] mLastUpdates = new PackageInfo[0];
-    private List<UpdaterListener> mListeners = new ArrayList<UpdaterListener>();
+    private List<UpdaterListener> mListeners = new ArrayList<>();
     private RequestQueue mQueue;
     private PreferenceHelper mSettingsHelper;
     private Server mServer;
@@ -101,8 +101,8 @@ public abstract class Updater implements Response.Listener<JSONObject>, Response
             mSettingsHelper = new PreferenceHelper(getContext());
         }
         if (mFromAlarm) {
-            if (!force && (mSettingsHelper.getPreference(mSettingsHelper.PROPERTY_CHECK_TIME,
-                    mSettingsHelper.DEFAULT_CHECK_TIME) == 0)) {
+            if (!force && (PreferenceHelper.getPreference(PreferenceHelper.PROPERTY_CHECK_TIME,
+                    PreferenceHelper.DEFAULT_CHECK_TIME) == 0)) {
                 return;
             }
         }
@@ -125,7 +125,7 @@ public abstract class Updater implements Response.Listener<JSONObject>, Response
     public void onResponse(JSONObject response) {
         mScanning = false;
         try {
-            PackageInfo[] lastUpdates = null;
+            PackageInfo[] lastUpdates;
             setLastUpdates(null);
             List<PackageInfo> list = mServer.createPackageInfoList(response);
             String error = mServer.getError();

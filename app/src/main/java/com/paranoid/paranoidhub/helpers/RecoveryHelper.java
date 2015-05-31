@@ -19,6 +19,7 @@
 
 package com.paranoid.paranoidhub.helpers;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.SparseArray;
 
@@ -30,7 +31,7 @@ import com.paranoid.paranoidhub.utils.OTAUtils;
 
 public class RecoveryHelper {
 
-    private SparseArray<RecoveryInfo> mRecoveries = new SparseArray<RecoveryInfo>();
+    private SparseArray<RecoveryInfo> mRecoveries = new SparseArray<>();
     private Context mContext;
 
     public RecoveryHelper(Context context) {
@@ -69,7 +70,7 @@ public class RecoveryHelper {
         String primarySdcard = IOUtils.getPrimarySdCard();
         String secondarySdcard = IOUtils.getSecondarySdCard();
 
-        String[] internalNames = new String[]{
+        @SuppressLint("SdCardPath") String[] internalNames = new String[]{
                 primarySdcard,
                 "/mnt/sdcard",
                 "/storage/sdcard/",

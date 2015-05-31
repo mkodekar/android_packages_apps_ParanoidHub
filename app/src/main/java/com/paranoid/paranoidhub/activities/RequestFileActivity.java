@@ -63,8 +63,7 @@ public class RequestFileActivity extends Activity {
 
             if (!(new File(filePath)).exists()) {
                 ContentResolver cr = getContentResolver();
-                Cursor cursor = cr.query(uri, null, null, null, null);
-                try {
+                try (Cursor cursor = cr.query(uri, null, null, null, null)) {
                     if (cursor.moveToNext()) {
                         int index = cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
                         if (index >= 0) {
@@ -91,8 +90,6 @@ public class RequestFileActivity extends Activity {
 
                         }
                     }
-                } finally {
-                    cursor.close();
                 }
             }
 

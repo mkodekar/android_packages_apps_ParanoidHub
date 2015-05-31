@@ -19,6 +19,7 @@
 
 package com.paranoid.paranoidhub.cards;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import com.paranoid.paranoidhub.widget.Card;
 import com.paranoid.paranoidhub.widget.Item;
 import com.paranoid.paranoidhub.widget.Item.OnItemClickListener;
 
+@SuppressLint("ViewConstructor")
 public class DownloadCard extends Card implements DownloadCallback {
 
     private static final String DOWNLOADING = "DOWNLOADING";
@@ -89,7 +91,7 @@ public class DownloadCard extends Card implements DownloadCallback {
             mDownloading = infos;
             if (infos == null) {
                 mDownloadProgress = -1;
-                setInfos(infos, mDownloadProgress);
+                setInfos(null, mDownloadProgress);
                 mCancel.setEnabled(true);
             }
         }

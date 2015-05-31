@@ -50,7 +50,7 @@ public class PaServer implements Server {
     @Override
     public List<Updater.PackageInfo> createPackageInfoList(JSONObject response) throws Exception {
         mError = null;
-        List<Updater.PackageInfo> list = new ArrayList<Updater.PackageInfo>();
+        List<Updater.PackageInfo> list = new ArrayList<>();
         mError = response.optString("error");
         if (mError == null || mError.isEmpty()) {
             JSONArray updates = response.getJSONArray("updates");

@@ -34,7 +34,6 @@ import com.paranoid.paranoidhub.R;
 public abstract class Card extends LinearLayout {
 
     private Context mContext;
-    private View mView;
     private LinearLayout mCardLayout;
     private TextView mTitleView;
     private View mLayoutView;
@@ -62,7 +61,7 @@ public abstract class Card extends LinearLayout {
 
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mView = inflater.inflate(R.layout.card, this, true);
+        View mView = inflater.inflate(R.layout.card, this, true);
 
         mCardLayout = (LinearLayout) mView.findViewById(R.id.card_layout);
         mButton = (ImageView) mView.findViewById(R.id.headerbutton);

@@ -409,10 +409,6 @@ public class HubActivity extends AppCompatActivity
         return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
-    public void setState(int state) {
-        setState(state, false, false);
-    }
-
     public void setState(int state, boolean animate, boolean fromRotation) {
         setState(state, animate, null, null, null, fromRotation);
     }
@@ -487,12 +483,15 @@ public class HubActivity extends AppCompatActivity
     private void updateTitle() {
         switch (mState) {
             case STATE_UPDATES:
+                if (getSupportActionBar() != null)
                 getSupportActionBar().setTitle(R.string.updates);
                 break;
             case STATE_INSTALL:
+                if (getSupportActionBar() != null)
                 getSupportActionBar().setTitle(R.string.install);
                 break;
             case STATE_FEEDBACK:
+                if (getSupportActionBar() != null)
                 getSupportActionBar().setTitle(R.string.feedback);
                 break;
         }
