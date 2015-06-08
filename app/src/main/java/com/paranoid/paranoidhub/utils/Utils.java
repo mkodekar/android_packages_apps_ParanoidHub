@@ -7,6 +7,7 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -36,7 +37,7 @@ public class Utils {
 
     public static void createToast(String string) {
         Toast.makeText(App.getContext(), string, Toast.LENGTH_LONG)
-             .show();
+                .show();
     }
 
     public static void createSnackbar(View parentLayout, String string) {

@@ -36,4 +36,8 @@
     <style name="ActionBarStyle" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="colorAccent">@android:color/white</item>
     </style>
+
+    <style name="Intro" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentNavigation">false</item>
+        </style>
 </resources>

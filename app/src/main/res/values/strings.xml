@@ -124,4 +124,8 @@
 
     <string name="select_picture">Select Picture</string>
     <string name="default_picture">Default Picture</string>
+
+    <!-- Intro -->
+    <string name="slide1">Fisrtslide</string>
+    <string name="skip">skip</string>
 </resources>

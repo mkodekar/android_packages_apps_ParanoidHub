@@ -1,5 +1,6 @@
 package com.paranoid.paranoidhub.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -42,6 +43,7 @@ import com.paranoid.paranoidhub.helpers.DownloadHelper;
 import com.paranoid.paranoidhub.helpers.PreferenceHelper;
 import com.paranoid.paranoidhub.helpers.RebootHelper;
 import com.paranoid.paranoidhub.helpers.RecoveryHelper;
+import com.paranoid.paranoidhub.intro.Intro;
 import com.paranoid.paranoidhub.updater.RomUpdater;
 import com.paranoid.paranoidhub.updater.Updater;
 import com.paranoid.paranoidhub.utils.IOUtils;
@@ -94,6 +96,7 @@ public class HubActivity extends AppCompatActivity
 
     private int mState = STATE_UPDATES;
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
@@ -188,6 +191,9 @@ public class HubActivity extends AppCompatActivity
             OTAUtils.setAlarm(this, true);
         }
 
+        //Start Tutorial
+        startIntro();
+
         mSplash.finish();
 
         String customImagePath = PreferenceHelper.getPreference(PreferenceHelper.PROPERTY_DRAWER_IMAGE, null);
@@ -219,6 +225,7 @@ public class HubActivity extends AppCompatActivity
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -343,12 +350,14 @@ public class HubActivity extends AppCompatActivity
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onResume() {
         super.onResume();
         DownloadHelper.registerCallback(this);
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onPause() {
         super.onPause();
@@ -484,16 +493,24 @@ public class HubActivity extends AppCompatActivity
         switch (mState) {
             case STATE_UPDATES:
                 if (getSupportActionBar() != null)
-                getSupportActionBar().setTitle(R.string.updates);
+                    getSupportActionBar().setTitle(R.string.updates);
                 break;
             case STATE_INSTALL:
                 if (getSupportActionBar() != null)
-                getSupportActionBar().setTitle(R.string.install);
+                    getSupportActionBar().setTitle(R.string.install);
                 break;
             case STATE_FEEDBACK:
                 if (getSupportActionBar() != null)
-                getSupportActionBar().setTitle(R.string.feedback);
+                    getSupportActionBar().setTitle(R.string.feedback);
                 break;
+        }
+    }
+
+    public void startIntro() {
+        PreferenceHelper.FirstRunPreference first_run = new PreferenceHelper.FirstRunPreference(mContext);
+        if (first_run.runTheFirstTime("intro")) {
+            Intent intent = new Intent(this, Intro.class);
+            startActivity(intent);
         }
     }
 

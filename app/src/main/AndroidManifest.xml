@@ -34,6 +34,12 @@
         </activity>
 
         <activity
+            android:name=".intro.Intro"
+            android:label="Intro"
+            android:theme="@style/Intro">
+        </activity>
+
+        <activity
             android:name=".activities.SystemActivity"
             android:theme="@style/SystemActivityTheme">
             <intent-filter>
