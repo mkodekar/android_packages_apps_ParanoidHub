@@ -1,4 +1,4 @@
-package com.paranoid.paranoidhub.intro.slides;
+package com.paranoid.paranoidhub.slides;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

@@ -1,14 +1,12 @@
-package com.paranoid.paranoidhub.intro;
+package com.paranoid.paranoidhub.activities;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import com.github.paolorotolo.appintro.AppIntro;
 import com.paranoid.paranoidhub.R;
 import com.paranoid.paranoidhub.activities.HubActivity;
-import com.paranoid.paranoidhub.intro.slides.FirstSlide;
-
+import com.paranoid.paranoidhub.slides.FirstSlide;
 
 public class Intro extends AppIntro {
     @Override

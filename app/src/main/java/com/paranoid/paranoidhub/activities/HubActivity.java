@@ -43,7 +43,6 @@ import com.paranoid.paranoidhub.helpers.DownloadHelper;
 import com.paranoid.paranoidhub.helpers.PreferenceHelper;
 import com.paranoid.paranoidhub.helpers.RebootHelper;
 import com.paranoid.paranoidhub.helpers.RecoveryHelper;
-import com.paranoid.paranoidhub.intro.Intro;
 import com.paranoid.paranoidhub.updater.RomUpdater;
 import com.paranoid.paranoidhub.updater.Updater;
 import com.paranoid.paranoidhub.utils.IOUtils;
@@ -191,10 +190,14 @@ public class HubActivity extends AppCompatActivity
             OTAUtils.setAlarm(this, true);
         }
 
-        //Start Tutorial
-        startIntro();
-
-        mSplash.finish();
+        if (!PreferenceHelper.getPreference(PreferenceHelper.PROPERTY_SHOWN_INTRO, false)) {
+            Intent introIntent = new Intent(this, Intro.class);
+            startActivity(introIntent);
+            PreferenceHelper.setPreference(PreferenceHelper.PROPERTY_SHOWN_INTRO, true);
+        } else {
+            mSplash.setVisibility(View.VISIBLE);
+            mSplash.finish();
+        }
 
         String customImagePath = PreferenceHelper.getPreference(PreferenceHelper.PROPERTY_DRAWER_IMAGE, null);
         if (customImagePath != null) {
@@ -503,14 +506,6 @@ public class HubActivity extends AppCompatActivity
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(R.string.feedback);
                 break;
-        }
-    }
-
-    public void startIntro() {
-        PreferenceHelper.FirstRunPreference first_run = new PreferenceHelper.FirstRunPreference(mContext);
-        if (first_run.runTheFirstTime("intro")) {
-            Intent intent = new Intent(this, Intro.class);
-            startActivity(intent);
         }
     }
 

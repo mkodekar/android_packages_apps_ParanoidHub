@@ -34,7 +34,7 @@
         </activity>
 
         <activity
-            android:name=".intro.Intro"
+            android:name=".activities.Intro"
             android:label="Intro"
             android:theme="@style/Intro">
         </activity>
