@@ -54,6 +54,10 @@ import com.paranoid.paranoidhub.widget.Splash;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.Optional;
+
 public class HubActivity extends AppCompatActivity
         implements Updater.UpdaterListener, DownloadHelper.DownloadCallback, AdapterView.OnItemClickListener,
         ImageView.OnClickListener {
@@ -71,13 +75,7 @@ public class HubActivity extends AppCompatActivity
 
     private static final int select_photo = 1;
 
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
-    private LinearLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
-    private ImageView mDrawerImage;
-    private LinearLayout mCardsLayout;
-    private FloatingActionButton mFloatingActionButton;
 
     private SystemCard mSystemCard;
     private UpdatesCard mUpdatesCard;
@@ -95,6 +93,16 @@ public class HubActivity extends AppCompatActivity
 
     private int mState = STATE_UPDATES;
 
+    @Optional @InjectView(R.id.cards_layout) LinearLayout mCardsLayout;
+    @Optional @InjectView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
+    @Optional @InjectView(R.id.left_drawer) ListView mDrawerList;
+    @Optional @InjectView(R.id.drawer) LinearLayout mDrawer;
+    @Optional @InjectView(R.id.drawer_header) ImageView mDrawerImage;
+    @Optional @InjectView(R.id.fab) FloatingActionButton mFloatingActionButton;
+    @Optional @InjectView(R.id.splash_view) Splash mSplash;
+    @Optional @InjectView(R.id.toolbar) Toolbar mToolbar;
+
+
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +112,7 @@ public class HubActivity extends AppCompatActivity
         mContext = this;
         mSavedInstanceState = savedInstanceState;
         setContentView(R.layout.activity_hub);
+        ButterKnife.inject(this);
 
         Resources res = getResources();
         List<String> itemText = new ArrayList<>();
@@ -115,17 +124,8 @@ public class HubActivity extends AppCompatActivity
         itemText.add(res.getString(R.string.crowdin));
         itemText.add(res.getString(R.string.github));
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
 
-        mCardsLayout = (LinearLayout) findViewById(R.id.cards_layout);
-
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawer = (LinearLayout) findViewById(R.id.drawer);
-        mDrawerImage = (ImageView) findViewById(R.id.drawer_header);
-        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
-        Splash mSplash = (Splash) findViewById(R.id.splash_view);
 
         mDrawerList.setAdapter(new ArrayAdapter<>(
                 this,
@@ -138,7 +138,7 @@ public class HubActivity extends AppCompatActivity
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                             /* host Activity */
                 mDrawerLayout,                    /* DrawerLayout object */
-                toolbar,
+                mToolbar,
                 R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
                 R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
         );

@@ -49,5 +49,6 @@ dependencies {
     compile 'com.android.support:design:22.2.0'
     compile 'com.instabug.library:instabugsupport:1+'
     compile 'com.github.paolorotolo:appintro:1.1.0'
+    compile 'com.jakewharton:butterknife:6.1.0'
     compile project(':discreteSeekBar')
 }
