@@ -126,22 +126,6 @@ public class OTAUtils {
         }
     }
 
-    public static String translateDeviceName(Context context, String device) {
-        Properties dictionary = IOUtils.getDictionary(context);
-        String translate = dictionary.getProperty(device);
-        if (translate == null) {
-            translate = device;
-            String[] remove = dictionary.getProperty("@remove").split(",");
-            for (int i = 0; i < remove.length; i++) {
-                if (translate.indexOf(remove[i]) >= 0) {
-                    translate = translate.replace(remove[i], "");
-                    break;
-                }
-            }
-        }
-        return translate;
-    }
-
     public static String getDateAndTime() {
         return new SimpleDateFormat("yyyy-MM-dd.HH.mm.ss").format(new Date(System
                 .currentTimeMillis()));

@@ -43,7 +43,6 @@ public class IOUtils {
     private static final String PREFIX = "pa_";
     private static final String SUFFIX = ".zip";
 
-    private static Properties sDictionary;
     private static String sPrimarySdcard;
     private static String sSecondarySdcard;
     private static boolean sSdcardsChecked;
@@ -294,18 +293,6 @@ public class IOUtils {
             } catch (Exception ignored) {
             }
         }
-    }
-
-    public static Properties getDictionary(Context context) {
-        if (sDictionary == null) {
-            sDictionary = new Properties();
-            try {
-                sDictionary.load(context.getAssets().open("dictionary.properties"));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return sDictionary;
     }
 
     private static File initSettingsHelper(Context context) {
