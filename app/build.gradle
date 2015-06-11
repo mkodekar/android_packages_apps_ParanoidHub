@@ -33,7 +33,7 @@ android {
         trial {
             applicationVariants.all { variant ->
                 variant.outputs.each { output ->
-                    def formattedDate = new Date().format('yyyyMMddHHmmss')
+                    def formattedDate = new Date().format('yyyyMMdd')
                     def newName = output.outputFile.name
                     newName = newName.replace("app-trial", "ParanoidHub" + "-" + formattedDate)
                     output.outputFile = new File(output.outputFile.parent, newName)
