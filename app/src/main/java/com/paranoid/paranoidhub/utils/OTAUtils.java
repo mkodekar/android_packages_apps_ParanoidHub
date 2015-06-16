@@ -144,7 +144,6 @@ public class OTAUtils {
     }
 
     public static void setAlarm(Context context, long time, boolean trigger) {
-
         Intent i = new Intent(context, NotificationAlarm.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -202,13 +201,12 @@ public class OTAUtils {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentTitle(resources.getString(R.string.new_system_update))
+                .setSmallIcon(R.drawable.ic_launcher_mono)
                 .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_launcher))
                 .setContentIntent(pIntent);
 
-        String contextText = "";
-        String filename;
-        filename = infosRom[0].getFilename();
-        contextText = resources.getString(R.string.new_package_name, new Object[]{
+        String filename = infosRom[0].getFilename();
+        String contextText = resources.getString(R.string.new_package_name, new Object[]{
                 filename
         });
         builder.setContentText(contextText);
@@ -224,14 +222,9 @@ public class OTAUtils {
         inboxStyle.setSummaryText(resources.getString(R.string.app_name));
         builder.setStyle(inboxStyle);
 
-        Notification notif = builder.build();
-
-        NotificationManager notificationManager = (NotificationManager) context
-                .getSystemService(Service.NOTIFICATION_SERVICE);
-
-        notif.flags |= Notification.FLAG_AUTO_CANCEL;
-
-        notificationManager.notify(Updater.NOTIFICATION_ID, notif);
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(Updater.NOTIFICATION_ID, builder.build());
     }
 
     public static boolean isNumeric(String str) {
@@ -281,7 +274,6 @@ public class OTAUtils {
     }
 
     public static class NotificationInfo implements Serializable {
-
         public int mNotificationId;
         public Updater.PackageInfo[] mPackageInfosRom;
     }
