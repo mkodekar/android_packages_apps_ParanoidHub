@@ -8,11 +8,9 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -25,12 +23,10 @@ import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.instabug.library.Instabug;
 import com.paranoid.paranoidhub.App;
 import com.paranoid.paranoidhub.R;
 import com.paranoid.paranoidhub.cards.DownloadCard;
@@ -77,7 +73,6 @@ public class HubActivity extends AppCompatActivity
     private ActionBarDrawerToggle mDrawerToggle;
     private ImageView mDrawerImage;
     private LinearLayout mCardsLayout;
-    private FloatingActionButton mFloatingActionButton;
 
     private SystemCard mSystemCard;
     private UpdatesCard mUpdatesCard;
@@ -124,7 +119,6 @@ public class HubActivity extends AppCompatActivity
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawer = (LinearLayout) findViewById(R.id.drawer);
         mDrawerImage = (ImageView) findViewById(R.id.drawer_header);
-        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         Splash mSplash = (Splash) findViewById(R.id.splash_view);
 
         mDrawerList.setAdapter(new ArrayAdapter<>(
@@ -257,41 +251,15 @@ public class HubActivity extends AppCompatActivity
                     break;
                 }
                 setState(STATE_UPDATES, true, false);
-                updateFAB(View.GONE, null, null);
                 break;
             case 1:
                 if (mState == STATE_INSTALL) {
                     break;
                 }
                 setState(STATE_INSTALL, true, false);
-                updateFAB(View.GONE, null, null);
                 break;
             case 2:
                 setState(STATE_FEEDBACK, true, false);
-                updateFAB(View.VISIBLE, getDrawable(R.drawable.ic_feedback_white_48dp), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Utils.createInputDialog(App.getContext().getString(R.string.feedback_title), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Instabug instabug = Instabug.getInstance();
-                                EditText inputText = (EditText) Utils.myDialogView.findViewById(R.id.dialog_input);
-                                String text = inputText.getText().toString() + "\n" + Utils.getDeviceInfo();
-                                instabug.reportBug(null, text, Utils.getEmail(),
-                                        new Instabug.OnSendBugReportListener() {
-                                            @Override
-                                            public void onBugReportSent(boolean success, String result) {
-                                                if (success) {
-                                                    Utils.createToast(App.getContext().getString(R.string.feedback_success));
-                                                } else {
-                                                    Utils.createToast(App.getContext().getString(R.string.feedback_failure));
-                                                }
-                                            }
-                                        });
-                            }
-                        }, null);
-                    }
-                });
                 break;
             case 3:
                 Intent browserIntent;
@@ -556,12 +524,5 @@ public class HubActivity extends AppCompatActivity
 
             }
         }).show();
-    }
-
-    private void updateFAB(int visibility, Drawable drawable, View.OnClickListener listener) {
-        mFloatingActionButton.setVisibility(visibility);
-        mFloatingActionButton.setBackgroundTintList(getResources().getColorStateList(R.color.red_700));
-        mFloatingActionButton.setImageDrawable(drawable);
-        mFloatingActionButton.setOnClickListener(listener);
     }
 }

@@ -23,24 +23,24 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.LinearLayout;
 
 import com.paranoid.paranoidhub.R;
+import com.paranoid.paranoidhub.widget.Card;
 
-public class FeedbackCard extends LinearLayout {
-
-    private View mView;
+public class FeedbackCard extends Card {
 
     public FeedbackCard(Context context, AttributeSet attrs, Bundle savedInstanceState) {
-        super(context, attrs);
+        super(context, attrs, savedInstanceState);
 
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mView = inflater.inflate(R.layout.card_feedback, this, true);
+        setTitle(R.string.feedback_title);
+        setLayoutId(R.layout.card_feedback);
 
         Resources res = context.getResources();
+    }
+
+    @Override
+    public boolean canExpand() {
+        return false;
     }
 
 }

@@ -2,22 +2,15 @@ package com.paranoid.paranoidhub.utils;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.os.Vibrator;
-import android.support.design.widget.Snackbar;
 import android.util.Patterns;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.paranoid.paranoidhub.App;
-import com.paranoid.paranoidhub.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,31 +26,6 @@ public class Utils {
     public static void createToast(String string) {
         Toast.makeText(App.getContext(), string, Toast.LENGTH_LONG)
                 .show();
-    }
-
-    public static void createSnackbar(View parentLayout, String string) {
-        Snackbar.make(parentLayout, string, Snackbar.LENGTH_LONG)
-                .show();
-    }
-
-    public static void createInputDialog(String title, DialogInterface.OnClickListener positiveListener,
-                                         DialogInterface.OnClickListener negativeListener) {
-        LayoutInflater factory = LayoutInflater.from(App.getContext());
-        myDialogView = factory.inflate(R.layout.dialog_feedback, null);
-        AlertDialog dialog = new AlertDialog.Builder(App.getContext(),
-                android.R.style.Theme_DeviceDefault_Light_Dialog_MinWidth)
-                .setTitle(title)
-                .setView(myDialogView)
-                .setPositiveButton(App.getContext().getString(android.R.string.yes), positiveListener)
-                .setNegativeButton(App.getContext().getString(android.R.string.no), negativeListener)
-                .create();
-        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-        dialog.show();
-    }
-
-    public static void doVibrate(int time) {
-        Vibrator v = (Vibrator) App.getContext().getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(time);
     }
 
     public static String getEmail() {
