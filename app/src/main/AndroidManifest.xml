@@ -69,6 +69,12 @@
                 <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".receivers.FeedbackReceiver">
+            <intent-filter>
+                <action android:name="com.paranoidhub.FEEDBACK" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

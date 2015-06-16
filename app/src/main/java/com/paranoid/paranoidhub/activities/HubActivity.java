@@ -30,7 +30,6 @@ import android.widget.ListView;
 import com.paranoid.paranoidhub.App;
 import com.paranoid.paranoidhub.R;
 import com.paranoid.paranoidhub.cards.DownloadCard;
-import com.paranoid.paranoidhub.cards.FeedbackCard;
 import com.paranoid.paranoidhub.cards.InstallCard;
 import com.paranoid.paranoidhub.cards.SettingsCard;
 import com.paranoid.paranoidhub.cards.SystemCard;
@@ -57,7 +56,6 @@ public class HubActivity extends AppCompatActivity
     public static final int STATE_UPDATES = 0;
     public static final int STATE_DOWNLOAD = 1;
     public static final int STATE_INSTALL = 2;
-    public static final int STATE_FEEDBACK = 3;
 
     private static final String CHANGELOG = "https://plus.google.com/+Aospal";
     private static final String COMMUNITY = "https://plus.google.com/communities/103106032137232805260";
@@ -79,7 +77,6 @@ public class HubActivity extends AppCompatActivity
     private SettingsCard mSettingsCard;
     private DownloadCard mDownloadCard;
     private InstallCard mInstallCard;
-    private FeedbackCard mFeedbackCard;
 
     private RebootHelper mRebootHelper;
     private DownloadHelper.DownloadCallback mDownloadCallback;
@@ -104,7 +101,6 @@ public class HubActivity extends AppCompatActivity
         List<String> itemText = new ArrayList<>();
         itemText.add(res.getString(R.string.updates));
         itemText.add(res.getString(R.string.install));
-        itemText.add(res.getString(R.string.feedback));
         itemText.add(res.getString(R.string.changelog));
         itemText.add(res.getString(R.string.community));
         itemText.add(res.getString(R.string.crowdin));
@@ -259,9 +255,6 @@ public class HubActivity extends AppCompatActivity
                 setState(STATE_INSTALL, true, false);
                 break;
             case 2:
-                setState(STATE_FEEDBACK, true, false);
-                break;
-            case 3:
                 Intent browserIntent;
                 if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
                     browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(CHANGELOG));
@@ -270,7 +263,7 @@ public class HubActivity extends AppCompatActivity
                     Utils.createToast(App.getContext().getString(R.string.no_connection));
                 }
                 break;
-            case 4:
+            case 3:
                 if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
                     browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(COMMUNITY));
                     startActivity(browserIntent);
@@ -278,7 +271,7 @@ public class HubActivity extends AppCompatActivity
                     Utils.createToast(App.getContext().getString(R.string.no_connection));
                 }
                 break;
-            case 5:
+            case 4:
                 if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
                     browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(CROWDIN));
                     startActivity(browserIntent);
@@ -286,7 +279,7 @@ public class HubActivity extends AppCompatActivity
                     Utils.createToast(App.getContext().getString(R.string.no_connection));
                 }
                 break;
-            case 6:
+            case 5:
                 if (Utils.isNetworkAvailable(this) || Utils.isOnWifi(this)) {
                     browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(GITHUB));
                     startActivity(browserIntent);
@@ -433,15 +426,6 @@ public class HubActivity extends AppCompatActivity
                     mInstallCard.addFile(uri, md5);
                 }
                 break;
-            case STATE_FEEDBACK:
-                if (mFeedbackCard == null) {
-                    mFeedbackCard = new FeedbackCard(mContext, null, mSavedInstanceState);
-                }
-                mCardsLayout.clearAnimation();
-                mCardsLayout.removeAllViews();
-                mCardsLayout.setAnimation(AnimationUtils.loadAnimation(this, R.anim.up_from_bottom));
-                mCardsLayout.addView(mFeedbackCard);
-                break;
         }
         ((ArrayAdapter<String>) mDrawerList.getAdapter()).notifyDataSetChanged();
         updateTitle();
@@ -469,10 +453,6 @@ public class HubActivity extends AppCompatActivity
             case STATE_INSTALL:
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(R.string.install);
-                break;
-            case STATE_FEEDBACK:
-                if (getSupportActionBar() != null)
-                    getSupportActionBar().setTitle(R.string.feedback);
                 break;
         }
     }
