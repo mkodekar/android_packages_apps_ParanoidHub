@@ -2,15 +2,12 @@ package com.paranoid.paranoidhub.utils;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.os.PowerManager;
 import android.os.Vibrator;
 import android.support.design.widget.Snackbar;
 import android.util.Patterns;
@@ -25,7 +22,6 @@ import com.paranoid.paranoidhub.R;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -98,27 +94,6 @@ public class Utils {
         return Build.VERSION.SDK_INT >= version;
     }
 
-    @SuppressLint("NewApi")
-    @SuppressWarnings("deprecation")
-    public static boolean isScreenOn() {
-        PowerManager powerManager = (PowerManager) App.getContext().getSystemService(Context.POWER_SERVICE);
-        if (isBuildHigherThanVersion(Build.VERSION_CODES.KITKAT_WATCH)) {
-            return powerManager.isInteractive();
-        } else {
-            return powerManager.isScreenOn();
-        }
-    }
-
-    public static boolean isServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) App.getContext().getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static String getReadableDate(String fileDate) {
         try {
             Date currentDate = new Date();
@@ -130,26 +105,6 @@ public class Utils {
             e.printStackTrace();
         }
         return null;
-    }
-
-    // Get current running App
-    public static String getForegroundApp() {
-        ActivityManager activityManager = (ActivityManager) App.getContext()
-                .getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
-        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
-            if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
-                return appProcess.processName;
-            }
-        }
-        return null;
-    }
-
-    public static boolean isAppForegroung() {
-        if (getForegroundApp().equals("com.paranoid.paranoidhub")) {
-            return true;
-        }
-        return false;
     }
 
     //check if device is connected to mobile network

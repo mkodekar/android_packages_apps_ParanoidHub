@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import com.github.paolorotolo.appintro.AppIntro;
 import com.paranoid.paranoidhub.R;
-import com.paranoid.paranoidhub.activities.HubActivity;
 import com.paranoid.paranoidhub.slides.FirstSlide;
 
 public class Intro extends AppIntro {

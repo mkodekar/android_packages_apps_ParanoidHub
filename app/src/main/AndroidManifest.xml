@@ -51,12 +51,6 @@
             android:name=".activities.RequestFileActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <service
-            android:name=".services.ShakeService"
-            android:enabled="true"
-            android:exported="true"
-            android:process=":background" />
-
         <receiver android:name=".receivers.NotificationAlarm" />
 
         <receiver
